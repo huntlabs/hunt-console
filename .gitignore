@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+hunt-console.so
+hunt-console.dylib
+hunt-console.dll
+hunt-console.a
+hunt-console.lib
+hunt-console-test-*
+*.exe
+*.o
+*.obj
+*.lst

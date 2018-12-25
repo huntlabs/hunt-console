@@ -1,0 +1,5 @@
+name "hunt-console"
+description "These commands are created with the hunt-console!"
+authors "HuntLabs.net"
+copyright "Copyright © 2018, HuntLabs.net"
+license "Apache-2.0"

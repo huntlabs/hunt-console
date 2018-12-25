@@ -1,0 +1,28 @@
+module hunt.console.output.Output;
+
+import hunt.console.formatter.OutputFormatter;
+
+public interface Output
+{
+    public void write(string message);
+
+    public void write(string message, boolean newline);
+
+    public void write(string message, boolean newline, OutputType type);
+
+    public void writeln(string message);
+
+    public void writeln(string message, OutputType type);
+
+    public void setVerbosity(Verbosity verbosity);
+
+    public Verbosity getVerbosity();
+
+    public void setDecorated(boolean decorated);
+
+    public boolean isDecorated();
+
+    public void setFormatter(OutputFormatter formatter);
+
+    public OutputFormatter getFormatter();
+}
