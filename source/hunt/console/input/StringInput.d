@@ -8,7 +8,7 @@ import hunt.container.List;
 
 import std.regex;
 
-public class StringInput : ArgvInput
+class StringInput : ArgvInput
 {
     private static string REGEX_STRING = "([^\\s]+?)(?:\\s|(?<!\\\\\\\\)\"|(?<!\\\\\\\\)\\'|$)";
 

@@ -8,7 +8,7 @@ import hunt.container.Iterator;
 import hunt.container.List;
 import hunt.container.Map;
 
-public class HelperSet : Iterable!(Helper)
+class HelperSet : Iterable!(Helper)
 {
     private Map!(string, Helper) helpers = new HashMap!(string, Helper)();
 

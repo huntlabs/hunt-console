@@ -1,6 +1,6 @@
 module hunt.console.helper.TimeFormat;
 
-public class TimeFormat
+class TimeFormat
 {
     private int seconds;
     private string name;

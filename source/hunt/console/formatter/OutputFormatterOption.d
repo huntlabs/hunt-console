@@ -1,6 +1,6 @@
 module hunt.console.formatter;
 
-public class OutputFormatterOption
+class OutputFormatterOption
 {
     private int set;
 
@@ -25,7 +25,7 @@ public class OutputFormatterOption
     override public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (!(o instanceof OutputFormatterOption)) return false;
+        if (!(cast(OutputFormatterOption)o !is null)) return false;
 
         OutputFormatterOption that = (OutputFormatterOption) o;
 

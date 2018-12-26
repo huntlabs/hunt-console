@@ -5,7 +5,7 @@ import hunt.console.formatter.OutputFormatter;
 import hunt.io.OutputStream;
 import hunt.io.PrintWriter;
 
-public class StreamOutput : AbstractOutput
+class StreamOutput : AbstractOutput
 {
     private OutputStream stream;
     private PrintWriter writer;

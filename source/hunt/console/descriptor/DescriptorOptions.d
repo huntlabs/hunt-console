@@ -3,7 +3,7 @@ module hunt.console.descriptor.DescriptorOptions;
 import hunt.container.HashMap;
 import hunt.container.Map;
 
-public class DescriptorOptions : Cloneable
+class DescriptorOptions : Cloneable
 {
     private Map!(string, string) options = new HashMap!(string, string)();
 

@@ -10,7 +10,7 @@ import hunt.console.output.Output;
 import hunt.container.HashMap;
 import hunt.container.Map;
 
-public class DescriptorHelper : AbstractHelper
+class DescriptorHelper : AbstractHelper
 {
     private Map!(string, Descriptor) descriptors = new HashMap!(string, Descriptor)();
 

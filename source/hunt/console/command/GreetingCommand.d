@@ -6,7 +6,7 @@ import hunt.console.input.InputArgument;
 import hunt.console.output.Output;
 import hunt.console.question.Question;
 
-public class GreetingCommand : Command
+class GreetingCommand : Command
 {
     override protected void configure()
     {

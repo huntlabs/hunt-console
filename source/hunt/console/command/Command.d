@@ -14,7 +14,7 @@ import hunt.console.output.Output;
 import hunt.container.Collection;
 import hunt.container.List;
 
-public class Command
+class Command
 {
     private Application application;
     private string name;
@@ -29,12 +29,12 @@ public class Command
     private HelperSet helperSet;
     private CommandExecutor executor;
 
-    public Command()
+    public this()
     {
         this(null);
     }
 
-    public Command(string name)
+    public this(string name)
     {
         definition = new InputDefinition();
 

@@ -5,7 +5,7 @@ import hunt.console.error.InvalidArgumentException;
 import hunt.container.ArrayList;
 import hunt.container.List;
 
-public class OutputFormatterStyleStack
+class OutputFormatterStyleStack
 {
     List!(OutputFormatterStyle) styles;
 

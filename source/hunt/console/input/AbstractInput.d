@@ -55,7 +55,7 @@ public abstract class AbstractInput : Input
     {
         Map!(string, string) argumentValues = definition.getArgumentDefaults();
 
-        for (Map.Entry!(string, string) argument : arguments.entrySet()) {
+        foreach (Map.Entry!(string, string) argument ; arguments.entrySet()) {
             argumentValues.put(argument.getKey(), argument.getValue());
         }
 
@@ -93,7 +93,7 @@ public abstract class AbstractInput : Input
     {
         Map!(string, string) optionValues = definition.getOptionDefaults();
 
-        for (Map.Entry!(string, string) option : options.entrySet()) {
+        foreach (Map.Entry!(string, string) option ; options.entrySet()) {
             optionValues.put(option.getKey(), option.getValue());
         }
 

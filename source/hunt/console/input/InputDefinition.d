@@ -7,7 +7,7 @@ import hunt.container.Map;
 import hunt.container.LinkedHashMap;
 import hunt.container.HashMap;
 
-public class InputDefinition
+class InputDefinition
 {
     private Map!(string, InputArgument) arguments = new LinkedHashMap!(string, InputArgument)();
 
@@ -126,7 +126,7 @@ public class InputDefinition
     public Map!(string, string) getArgumentDefaults()
     {
         HashMap!(string, string) defaultValues = new LinkedHashMap!(string, string)();
-        for (InputArgument argument : arguments.values()) {
+        foreach (InputArgument argument ; arguments.values()) {
             defaultValues.put(argument.getName(), argument.getDefaultValue());
         }
 
@@ -164,7 +164,7 @@ public class InputDefinition
         }
 
         if (option.getShortcut() != null) {
-            for (string shortcut : option.getShortcut().split("\\|")) {
+            foreach (string shortcut ; option.getShortcut().split("\\|")) {
                 if (shortcuts.containsKey(shortcut) && !option == options.get(shortcuts.get(shortcut))) {
                     throw new LogicException(string.format("An option with shortcut '%s' already exists.", shortcut));
                 }
@@ -174,7 +174,7 @@ public class InputDefinition
         options.put(option.getName(), option);
 
         if (option.getShortcut() != null) {
-            for (string shortcut : option.getShortcut().split("|")) {
+            foreach (string shortcut ; option.getShortcut().split("|")) {
                 shortcuts.put(shortcut, option.getName());
             }
         }
@@ -212,7 +212,7 @@ public class InputDefinition
     public Map!(string, string) getOptionDefaults()
     {
         HashMap!(string, string) defaultValues = new HashMap!(string, string)();
-        for (InputOption option : options.values()) {
+        foreach (InputOption option ; options.values()) {
             defaultValues.put(option.getName(), option.getDefaultValue());
         }
 
@@ -233,12 +233,12 @@ public class InputDefinition
         StringBuilder synopsis = new StringBuilder();
 
         string shortcut;
-        for (InputOption option : options.values()) {
+        foreach (InputOption option ; options.values()) {
             shortcut = option.getShortcut() == null ? "" : (string.format("-%s|", option.getShortcut()));
             synopsis.append(string.format("[" + (option.isValueRequired() ? "%s--%s='...'" : (option.isValueOptional() ? "%s--%s[='...']" : "%s--%s")) + "] ", shortcut, option.getName()));
         }
 
-        for (InputArgument argument : arguments.values()) {
+        foreach (InputArgument argument ; arguments.values()) {
             synopsis.append(string.format(argument.isRequired() ? "%s " : "[%s] ", argument.getName() + (argument.isArray() ? "1" : "")));
             if (argument.isArray()) {
                 synopsis.append(string.format("... [%sN]", argument.getName()));

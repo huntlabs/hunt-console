@@ -8,7 +8,7 @@ import hunt.console.question.Question;
 import hunt.io.InputStream;
 import hunt.container.Scanner;
 
-public class QuestionHelper : AbstractHelper
+class QuestionHelper : AbstractHelper
 {
     private InputStream inputStream;
 
@@ -26,7 +26,7 @@ public class QuestionHelper : AbstractHelper
         InputStream inputStream = this.inputStream == null ? System.in : this.inputStream;
 
         string message = question.getQuestion();
-        if (question instanceof ChoiceQuestion) {
+        if (cast(ChoiceQuestion)question !is null) {
 
         }
 

@@ -3,7 +3,7 @@ module hunt.console.input.InputArgument;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
 
-public class InputArgument
+class InputArgument
 {
     public static int REQUIRED = 1;
     public static int OPTIONAL = 2;

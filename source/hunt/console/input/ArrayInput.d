@@ -6,7 +6,7 @@ import hunt.container.HashMap;
 import hunt.container.LinkedHashMap;
 import hunt.container.Map;
 
-public class ArrayInput : AbstractInput
+class ArrayInput : AbstractInput
 {
     private Map!(string, string) parameters;
 
@@ -45,7 +45,7 @@ public class ArrayInput : AbstractInput
     override protected void parse()
     {
         string key, value;
-        for (Map.Entry!(string, string) parameter : parameters.entrySet()) {
+        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             key = parameter.getKey();
             value = parameter.getValue();
             if (key.startsWith("--")) {
@@ -97,7 +97,7 @@ public class ArrayInput : AbstractInput
 
     override public string getFirstArgument()
     {
-        for (Map.Entry!(string, string) parameter : parameters.entrySet()) {
+        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             if (parameter.getKey().startsWith("-")) {
                 continue;
             }
@@ -109,7 +109,7 @@ public class ArrayInput : AbstractInput
 
     override public boolean hasParameterOption(string... values)
     {
-        for (Map.Entry!(string, string) parameter : parameters.entrySet()) {
+        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             foreach (string value ; values) {
                 if (parameter.getKey() == value) {
                     return true;
@@ -127,7 +127,7 @@ public class ArrayInput : AbstractInput
 
     override public string getParameterOption(string value, string defaultValue)
     {
-        for (Map.Entry!(string, string) parameter : parameters.entrySet()) {
+        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             if (parameter.getKey() == value) {
                 return parameter.getValue();
             }

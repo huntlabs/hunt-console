@@ -6,7 +6,7 @@ import hunt.console.util.StringUtils;
 import hunt.container.Map;
 import hunt.container.HashMap;
 
-public class DefaultOutputFormatterStyle : OutputFormatterStyle
+class DefaultOutputFormatterStyle : OutputFormatterStyle
 {
     private static Map!(string, OutputFormatterOption) availableForegroundColors = new HashMap!(string, OutputFormatterOption)();
     private static Map!(string, OutputFormatterOption) availableBackgroundColors = new HashMap!(string, OutputFormatterOption)();
@@ -174,7 +174,7 @@ public class DefaultOutputFormatterStyle : OutputFormatterStyle
     override public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (!(o instanceof DefaultOutputFormatterStyle)) return false;
+        if (!(cast(DefaultOutputFormatterStyle)o !is null)) return false;
 
         DefaultOutputFormatterStyle that = (DefaultOutputFormatterStyle) o;
 

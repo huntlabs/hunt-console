@@ -10,7 +10,7 @@ import hunt.console.util.StringUtils;
 import hunt.container.List;
 import hunt.container.Map;
 
-public class TextDescriptor : AbstractDescriptor
+class TextDescriptor : AbstractDescriptor
 {
     override protected void describeInputArgument(InputArgument argument, DescriptorOptions options)
     {
@@ -51,14 +51,14 @@ public class TextDescriptor : AbstractDescriptor
     {
         int nameWidth = 0;
         int nameLength;
-        for (InputOption option : definition.getOptions()) {
+        foreach (InputOption option ; definition.getOptions()) {
             nameLength = option.getName().length() + 2;
             if (option.getShortcut() != null) {
                 nameLength += option.getShortcut().length() + 3;
             }
             nameWidth = Math.max(nameWidth, nameLength);
         }
-        for (InputArgument argument : definition.getArguments()) {
+        foreach (InputArgument argument ; definition.getArguments()) {
             nameWidth = Math.max(nameWidth, argument.getName().length());
         }
         ++nameWidth;
@@ -66,7 +66,7 @@ public class TextDescriptor : AbstractDescriptor
         if (definition.getArgumentCount() > 0) {
             writeText("<comment>Arguments:</comment>", options);
             writeNewline();
-            for (InputArgument argument : definition.getArguments()) {
+            foreach (InputArgument argument ; definition.getArguments()) {
                 describeInputArgument(argument, (new DescriptorOptions()).set("name_width", string.valueOf(nameWidth)));
                 writeNewline();
             }
@@ -78,7 +78,7 @@ public class TextDescriptor : AbstractDescriptor
         if (definition.getOptions().size() > 0) {
             writeText("<comment>Options:</comment>", options);
             writeNewline();
-            for (InputOption option : definition.getOptions()) {
+            foreach (InputOption option ; definition.getOptions()) {
                 describeInputOption(option, (new DescriptorOptions()).set("name_width", string.valueOf(nameWidth)));
                 writeNewline();
             }
@@ -125,7 +125,7 @@ public class TextDescriptor : AbstractDescriptor
         int width = getColumnWidth(description.getCommands());
 
         if (options.has("raw_text") && Boolean.parseBoolean(options.get("raw_text"))) {
-            for (Command command : description.getCommands().values()) {
+            foreach (Command command ; description.getCommands().values()) {
                 writeText(string.format("%-" ~ width ~ "s %s", command.getName(), command.getDescription()), options);
                 writeNewline();
             }
@@ -140,14 +140,14 @@ public class TextDescriptor : AbstractDescriptor
             }
 
             // add commands by namespace
-            for (Map.Entry!(string, List!(string)) entry : description.getNamespaces().entrySet()) {
+            foreach (Map.Entry!(string, List!(string)) entry ; description.getNamespaces().entrySet()) {
 
                 if (describedNamespace == null && !ApplicationDescription.GLOBAL_NAMESPACE == entry.getKey()) {
                     writeNewline();
                     writeText("<comment>" ~ entry.getKey() + "</comment>", options);
                 }
 
-                for (string name : entry.getValue()) {
+                foreach (string name ; entry.getValue()) {
                     writeNewline();
                     writeText(string.format("  <info>%-" ~ width ~ "s</info> %s", name, description.getCommand(name).getDescription() == null ? "" : description.getCommand(name).getDescription()), options);
                 }
@@ -173,7 +173,7 @@ public class TextDescriptor : AbstractDescriptor
     private int getColumnWidth(Map!(string, Command) commands)
     {
         int width = 0;
-        for (Command command : commands.values()) {
+        foreach (Command command ; commands.values()) {
             width = Math.max(width, command.getName().length());
         }
 

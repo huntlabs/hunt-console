@@ -4,7 +4,7 @@ import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
 import hunt.console.util.StringUtils;
 
-public class InputOption
+class InputOption
 {
     public static int VALUE_NONE = 1;
     public static int VALUE_REQUIRED = 2;
@@ -126,7 +126,7 @@ public class InputOption
     override public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (!(o instanceof InputOption)) return false;
+        if (!(cast(InputOption)o !is null)) return false;
 
         InputOption that = (InputOption) o;
 

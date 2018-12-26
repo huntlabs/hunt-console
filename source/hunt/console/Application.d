@@ -16,35 +16,40 @@ import hunt.io.BufferedReader;
 import hunt.io.InputStreamReader;
 
 
-public class Application
+class Application
 {
-    private Map!(string, Command) commands = new HashMap!(string, Command)();
-    private boolean wantHelps;
-    private string name;
-    private string version;
-    private InputDefinition definition;
-    private boolean autoExit = true;
-    private string defaultCommand;
-    private boolean catchExceptions = true;
-    private Command runningCommand;
-    private Command[] defaultCommands;
-    private int[] terminalDimensions;
-    private HelperSet helperSet;
+    private Map!(string, Command) _commands;
+    private boolean _wantHelps;
+    private string _name;
+    private string _version;
+    private InputDefinition _definition;
+    private boolean _autoExit = true;
+    private string _defaultCommand;
+    private boolean _catchExceptions = true;
+    private Command _runningCommand;
+    private Command[] _defaultCommands;
+    private int[] _terminalDimensions;
+    private HelperSet _helperSet;
 
-    public Application()
+    shared this()
+    {
+        commands = new HashMap!(string, Command)();
+    }
+
+    this()
     {
         this("UNKNOWN", "UNKNOWN");
     }
 
-    public Application(string name, string version)
+    this(string name, string ver)
     {
-        this.name = name;
-        this.version = version;
-        this.defaultCommand = "list";
-        this.helperSet = getDefaultHelperSet();
-        this.definition = getDefaultInputDefinition();
+        _name = name;
+        _version = ver;
+        _defaultCommand = "list";
+        _helperSet = getDefaultHelperSet();
+        _definition = getDefaultInputDefinition();
 
-        for (Command command : getDefaultCommands()) {
+        foreach (Command command ; getDefaultCommands()) {
             add(command);
         }
     }
@@ -67,8 +72,8 @@ public class Application
                 throw new RuntimeException(e);
             }
 
-            if (output instanceof ConsoleOutput) {
-                renderException(e, ((ConsoleOutput) output).getErrorOutput());
+            if (cast(ConsoleOutput)output !is null) {
+                renderException(e, (cast(ConsoleOutput) output).getErrorOutput());
             } else {
                 renderException(e, output);
             }
@@ -173,42 +178,42 @@ public class Application
 
     public void setAutoExit(boolean autoExit)
     {
-        this.autoExit = autoExit;
+        _autoExit = autoExit;
     }
 
     public void setCatchExceptions(boolean catchExceptions)
     {
-        this.catchExceptions = catchExceptions;
+        _catchExceptions = catchExceptions;
     }
 
     public string getName()
     {
-        return name;
+        return _name;
     }
 
     public void setName(string name)
     {
-        this.name = name;
+        _name = name;
     }
 
     public string getVersion()
     {
-        return version;
+        return _version;
     }
 
-    public void setVersion(string version)
+    public void setVersion(string ver)
     {
-        this.version = version;
+        _version = ver;
     }
 
     public InputDefinition getDefinition()
     {
-        return definition;
+        return _definition;
     }
 
     public void setDefinition(InputDefinition definition)
     {
-        this.definition = definition;
+        _definition = definition;
     }
 
     public string getHelp()
@@ -229,7 +234,7 @@ public class Application
             .append(nl)
         ;
 
-        for (InputOption option : definition.getOptions()) {
+        foreach (InputOption option ; definition.getOptions()) {
             sb.append(string.format("  %-29s %s %s",
                     "<info>--" ~ option.getName() + "</info>",
                     option.getShortcut() == null ? "  " : "<info>-" ~ option.getShortcut() + "</info>",
@@ -254,7 +259,7 @@ public class Application
         return add(new Command(name));
     }
 
-    public void addCommands(Command... commands)
+    public void addCommands(Command[] commands)
     {
         foreach (Command command ; commands) {
             add(command);
@@ -281,8 +286,8 @@ public class Application
 
         commands.put(command.getName(), command);
 
-        for (string alias : command.getAliases()) {
-            commands.put(alias, command);
+        foreach (string a ; command.getAliases()) {
+            commands.put(a, command);
         }
 
         return command;
@@ -295,15 +300,15 @@ public class Application
 
     public Map!(string, Command) all()
     {
-        return commands;
+        return _commands;
     }
 
     public Map!(string, Command) all(string namespace)
     {
         Map!(string, Command) commands = new HashMap!(string, Command)();
 
-        for (Command command : this.commands.values()) {
-            if (namespace == extractNamespace(command.getName(, stringUtils.count(namespace, ':') + 1))) {
+        foreach (Command command ; _commands.values()) {
+            if (namespace == extractNamespace(command.getName(), stringUtils.count(namespace, ':') + 1)) {
                 commands.put(command.getName(), command);
             }
         }
@@ -334,16 +339,16 @@ public class Application
 
     public Command get(string name)
     {
-        if (!commands.containsKey(name)) {
+        if (!_commands.containsKey(name)) {
             throw new InvalidArgumentException(string.format("The command '%s' does not exist.", name));
         }
 
-        Command command = commands.get(name);
+        Command command = _commands.get(name);
 
         if (wantHelps) {
             wantHelps = false;
 
-            HelpCommand helpCommand = (HelpCommand) get("help");
+            HelpCommand helpCommand = cast(HelpCommand) get("help");
             helpCommand.setCommand(command);
 
             return helpCommand;
@@ -354,21 +359,21 @@ public class Application
 
     public boolean has(string name)
     {
-        return commands.containsKey(name);
+        return _commands.containsKey(name);
     }
 
     public string[] getNamespaces()
     {
-        Set!(string) namespaces = new HashSet<>();
+        Set!(string) namespaces = new HashSet!(string)();
 
         string namespace;
-        for (Command command : commands.values()) {
+        foreach (Command command ; _commands.values()) {
             namespace = extractNamespace(command.getName());
             if (namespace != null) {
                 namespaces.add(namespace);
             }
-            for (string alias : command.getAliases()) {
-                extractNamespace(alias);
+            foreach (string a ; command.getAliases()) {
+                extractNamespace(a);
                 if (namespace != null) {
                     namespaces.add(namespace);
                 }
@@ -409,12 +414,12 @@ public class Application
 
     public HelperSet getHelperSet()
     {
-        return helperSet;
+        return _helperSet;
     }
 
     public void setHelperSet(HelperSet helperSet)
     {
-        this.helperSet = helperSet;
+        _helperSet = helperSet;
     }
 
     protected HelperSet getDefaultHelperSet()
@@ -433,7 +438,7 @@ public class Application
 
 //        string sttystring = getSttyColumns();
 
-        return new int[] {80, 120};
+        return [80, 120];
     }
 
     public string getSttyColumns()
@@ -444,16 +449,16 @@ public class Application
         try {
             ProcessBuilder builder = new ProcessBuilder("/bin/bash", "stty", "-a");
             Process process = builder.start();
-            StringBuilder out = new StringBuilder();
+            StringBuilder o = new StringBuilder();
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
             string line, previous = null;
             while ((line = br.readLine()) != null) {
                 if (!line == previous) {
                     previous = line;
-                    out.append(line).append('\n');
+                    o.append(line).append('\n');
                 }
             }
-            sttyColumns = out.toString();
+            sttyColumns = o.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }

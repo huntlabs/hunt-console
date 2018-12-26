@@ -11,7 +11,7 @@ import hunt.container.Map;
 
 import std.regex;
 
-public class ProgressBar
+class ProgressBar
 {
     // options
     private int barWidth = 28;

@@ -3,7 +3,7 @@ module hunt.console.output.NullOutput;
 import hunt.console.formatter.DefaultOutputFormatter;
 import hunt.console.formatter.OutputFormatter;
 
-public class NullOutput : Output
+class NullOutput : Output
 {
     override public void write(string message)
     {

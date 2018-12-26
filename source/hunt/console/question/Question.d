@@ -2,7 +2,7 @@ module hunt.console.question.Question;
 
 import hunt.console.error.InvalidArgumentException;
 
-public class Question
+class Question
 {
     private string question;
     private int attempts;

@@ -2,7 +2,7 @@ module hunt.console.output.SystemOutput;
 
 import hunt.console.formatter.OutputFormatter;
 
-public class SystemOutput : StreamOutput : ConsoleOutput
+class SystemOutput : StreamOutput : ConsoleOutput
 {
     private Output stderr;
 

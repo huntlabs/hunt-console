@@ -4,7 +4,7 @@ import hunt.io.PrintWriter;
 import hunt.io.StringWriter;
 import hunt.io.Writer;
 
-public class ThrowableUtils
+class ThrowableUtils
 {
     public static string getThrowableAsString(Throwable throwable)
     {

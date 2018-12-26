@@ -9,7 +9,7 @@ import hunt.container.HashMap;
 import hunt.container.List;
 import hunt.container.Map;
 
-public class ApplicationDescription
+class ApplicationDescription
 {
     public static string GLOBAL_NAMESPACE = "_global";
 
@@ -78,12 +78,12 @@ public class ApplicationDescription
             all = application.all(namespace);
         }
 
-        for (Map.Entry<String, Map!(string, Command)> entry : sortCommands(all).entrySet()) {
+        foreach (Map.Entry!(string, Map!(string, Command)) entry ; sortCommands(all).entrySet()) {
 
             string namespace = entry.getKey();
             List!(string) names = new ArrayList!(string)();
 
-            for (Map.Entry!(string, Command) commandEntry : entry.getValue().entrySet()) {
+            foreach (Map.Entry!(string, Command) commandEntry ; entry.getValue().entrySet()) {
                 string name = commandEntry.getKey();
                 Command command = commandEntry.getValue();
                 if (command.getName() == null || command.getName().isEmpty()) {
@@ -103,12 +103,12 @@ public class ApplicationDescription
         }
     }
 
-    private Map<String, Map!(string, Command)> sortCommands(Map!(string, Command) commands)
+    private Map!(string, Map!(string, Command)) sortCommands(Map!(string, Command) commands)
     {
-        Map<String, Map!(string, Command)> namespacedCommands = new HashMap<String, Map!(string, Command)>();
+        Map!(string, Map!(string, Command)) namespacedCommands = new HashMap!(string, Map!(string, Command))();
 
         string key;
-        for (Map.Entry!(string, Command) entry : commands.entrySet()) {
+        foreach (Map.Entry!(string, Command) entry ; commands.entrySet()) {
             key = application.extractNamespace(entry.getKey(), 1);
             if (key == null || key.isEmpty()) {
                 key = GLOBAL_NAMESPACE;

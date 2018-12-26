@@ -4,7 +4,7 @@ import hunt.container.ArrayList;
 import hunt.container.Arrays;
 import hunt.container.List;
 
-public class ArgvInput : AbstractInput
+class ArgvInput : AbstractInput
 {
     private List!(string) tokens;
     private List!(string) parsed;

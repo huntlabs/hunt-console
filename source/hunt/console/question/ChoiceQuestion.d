@@ -2,7 +2,7 @@ module hunt.console.question.ChoiceQuestion;
 
 import hunt.container.HashMap;
 
-public class ChoiceQuestion : Question
+class ChoiceQuestion : Question
 {
     private HashMap!(string, string) choices;
     private boolean multiselect = false;

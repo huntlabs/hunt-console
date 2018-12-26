@@ -7,7 +7,7 @@ import hunt.container.Map;
 
 import std.regex;
 
-public class DefaultOutputFormatter : OutputFormatter
+class DefaultOutputFormatter : OutputFormatter
 {
     private boolean decorated;
 

@@ -10,7 +10,7 @@ import hunt.console.util.StringUtils;
 import hunt.container.List;
 import hunt.container.Map;
 
-public class MarkdownDescriptor : AbstractDescriptor
+class MarkdownDescriptor : AbstractDescriptor
 {
     override protected void describeInputArgument(InputArgument argument, DescriptorOptions options)
     {
@@ -43,7 +43,7 @@ public class MarkdownDescriptor : AbstractDescriptor
         boolean showArguments = definition.getArguments().size() > 0;
         if (showArguments) {
             write("### Arguments:");
-            for (InputArgument argument : definition.getArguments()) {
+            foreach (InputArgument argument ; definition.getArguments()) {
                 write("\n\n");
                 describeInputArgument(argument, options);
             }
@@ -54,7 +54,7 @@ public class MarkdownDescriptor : AbstractDescriptor
                 write("\n\n");
             }
             write("### Options:");
-            for (InputOption option : definition.getOptions()) {
+            foreach (InputOption option ; definition.getOptions()) {
                 write("\n\n");
                 describeInputOption(option, options);
             }
@@ -94,7 +94,7 @@ public class MarkdownDescriptor : AbstractDescriptor
 
         write(application.getName() + "\n" ~ StringUtils.repeat("=", application.getName().length()));
 
-        for (Map.Entry!(string, List!(string)) entry : description.getNamespaces().entrySet()) {
+        foreach (Map.Entry!(string, List!(string)) entry ; description.getNamespaces().entrySet()) {
             string namespace = entry.getKey();
             if (!namespace == ApplicationDescription.GLOBAL_NAMESPACE) {
                 write("\n\n");
@@ -102,12 +102,12 @@ public class MarkdownDescriptor : AbstractDescriptor
             }
 
             write("\n\n");
-            for (string commandName : entry.getValue()) {
+            foreach (string commandName ; entry.getValue()) {
                 write("* " ~ commandName ~ "\n");
             }
         }
 
-        for (Command command : description.getCommands().values()) {
+        foreach (Command command ; description.getCommands().values()) {
             write("\n\n");
             describeCommand(command, options);
         }

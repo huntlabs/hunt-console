@@ -22,15 +22,15 @@ public abstract class AbstractDescriptor : Descriptor
     {
         this.output = output;
 
-        if (object instanceof InputArgument) {
+        if (cast(InputArgument)object !is null) {
             describeInputArgument((InputArgument) object, options);
         } else if (object instanceof  InputOption) {
             describeInputOption((InputOption) object, options);
-        } else if (object instanceof InputDefinition) {
+        } else if (cast(InputDefinition)object !is null) {
             describeInputDefinition((InputDefinition) object, options);
-        } else if (object instanceof Command) {
+        } else if (cast(Command)object !is null) {
             describeCommand((Command) object, options);
-        } else if (object instanceof Application) {
+        } else if (cast(Application)object !is null) {
             describeApplication((Application) object, options);
         } else {
             throw new InvalidArgumentException(string.format("Object of type '%s' is not describable.", object.getClass()));

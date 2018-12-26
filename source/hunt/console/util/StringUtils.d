@@ -1,6 +1,6 @@
 module hunt.console.util.StringUtils;
 
-public class StringUtils
+class StringUtils
 {
     public static string repeat(string s, int n)
     {
