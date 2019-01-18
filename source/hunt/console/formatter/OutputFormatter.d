@@ -1,14 +1,15 @@
-module hunt.console.formatter;
+module hunt.console.formatter.OutputFormatter;
+import hunt.console.formatter.OutputFormatterStyle;
 
 public interface OutputFormatter
 {
-    public void setDecorated(boolean decorated);
+    public void setDecorated(bool decorated);
 
-    public boolean isDecorated();
+    public bool isDecorated();
 
     public void setStyle(string name, OutputFormatterStyle style);
 
-    public boolean hasStyle(string name);
+    public bool hasStyle(string name);
 
     public OutputFormatterStyle getStyle(string name);
 

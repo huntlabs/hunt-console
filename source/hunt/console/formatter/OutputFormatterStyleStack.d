@@ -1,9 +1,10 @@
 module hunt.console.formatter.OutputFormatterStyleStack;
 
 import hunt.console.error.InvalidArgumentException;
+import hunt.console.formatter.OutputFormatterStyle;
 
-import hunt.container.ArrayList;
-import hunt.container.List;
+import hunt.collection.ArrayList;
+import hunt.collection.List;
 
 class OutputFormatterStyleStack
 {
@@ -11,12 +12,12 @@ class OutputFormatterStyleStack
 
     OutputFormatterStyle emptyStyle;
 
-    public OutputFormatterStyleStack()
+    public this()
     {
         this(new DefaultOutputFormatterStyle());
     }
 
-    public OutputFormatterStyleStack(OutputFormatterStyle emptyStyle)
+    public this(OutputFormatterStyle emptyStyle)
     {
         this.emptyStyle = emptyStyle;
         reset();

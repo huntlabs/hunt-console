@@ -1,6 +1,9 @@
 module hunt.console.helper.AbstractHelper;
 
 import hunt.console.formatter.OutputFormatter;
+import hunt.console.helper.Helper;
+import hunt.console.helper.HelperSet;
+import hunt.console.helper.TimeFormat;
 
 public abstract class AbstractHelper : Helper
 {
@@ -8,8 +11,8 @@ public abstract class AbstractHelper : Helper
 
     private static TimeFormat[] timeFormats;
 
-    static {
-        timeFormats = new TimeFormat[]{
+    static this(){
+        timeFormats = [
                 new TimeFormat(0, "< 1 sec"),
                 new TimeFormat(2, "1 sec"),
                 new TimeFormat(59, "secs", 1),
@@ -19,7 +22,7 @@ public abstract class AbstractHelper : Helper
                 new TimeFormat(86400, "hrs", 3600),
                 new TimeFormat(129600, "1 day"),
                 new TimeFormat(604800, "days", 86400),
-        };
+        ];
     }
 
     override public HelperSet getHelperSet()
@@ -43,7 +46,7 @@ public abstract class AbstractHelper : Helper
                 return timeFormat.getName();
             }
 
-            return (int) Math.ceil(seconds / timeFormat.getDiv()) + " " ~ timeFormat.getName();
+            return cast(int) Math.ceil(seconds / timeFormat.getDiv()) ~ " " ~ timeFormat.getName();
         }
 
         return null;
@@ -68,7 +71,7 @@ public abstract class AbstractHelper : Helper
 
     public static int strlenWithoutDecoration(OutputFormatter formatter, string string)
     {
-        boolean isDecorated = formatter.isDecorated();
+        bool isDecorated = formatter.isDecorated();
         formatter.setDecorated(false);
 
         // remove <...> formatting

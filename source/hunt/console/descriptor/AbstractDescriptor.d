@@ -8,12 +8,14 @@ import hunt.console.input.InputDefinition;
 import hunt.console.input.InputOption;
 import hunt.console.output.Output;
 import hunt.console.output.OutputType;
+import hunt.console.descriptor.Descriptor;
+import hunt.console.descriptor.DescriptorOptions;
 
 public abstract class AbstractDescriptor : Descriptor
 {
     private Output output;
 
-    override public void describe(Output output, Object object)
+    /* override */ public void describe(Output output, Object object)
     {
         describe(output, object, new DescriptorOptions());
     }
@@ -23,15 +25,15 @@ public abstract class AbstractDescriptor : Descriptor
         this.output = output;
 
         if (cast(InputArgument)object !is null) {
-            describeInputArgument((InputArgument) object, options);
-        } else if (object instanceof  InputOption) {
-            describeInputOption((InputOption) object, options);
+            describeInputArgument(cast(InputArgument) object, options);
+        } else if (cast(InputOption)object !is null) {
+            describeInputOption(cast(InputOption) object, options);
         } else if (cast(InputDefinition)object !is null) {
-            describeInputDefinition((InputDefinition) object, options);
+            describeInputDefinition(cast(InputDefinition) object, options);
         } else if (cast(Command)object !is null) {
-            describeCommand((Command) object, options);
+            describeCommand(cast(Command) object, options);
         } else if (cast(Application)object !is null) {
-            describeApplication((Application) object, options);
+            describeApplication(cast(Application) object, options);
         } else {
             throw new InvalidArgumentException(string.format("Object of type '%s' is not describable.", object.getClass()));
         }
@@ -42,7 +44,7 @@ public abstract class AbstractDescriptor : Descriptor
         write(message, false);
     }
 
-    protected void write(string message, boolean decorated)
+    protected void write(string message, bool decorated)
     {
         output.write(message, false, decorated ? OutputType.NORMAL : OutputType.RAW);
     }

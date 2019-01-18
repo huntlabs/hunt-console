@@ -1,19 +1,25 @@
-module hunt.console.formatter;
+module hunt.console.formatter.DefaultOutputFormatterStyle;
 
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.util.StringUtils;
 
-import hunt.container.Map;
-import hunt.container.HashMap;
+import hunt.collection.Map;
+import hunt.collection.HashMap;
+import hunt.collection.List;
+import hunt.collection.ArrayList;
+import hunt.console.formatter.OutputFormatterStyle;
+import hunt.console.formatter.OutputFormatterOption;
 
 class DefaultOutputFormatterStyle : OutputFormatterStyle
 {
-    private static Map!(string, OutputFormatterOption) availableForegroundColors = new HashMap!(string, OutputFormatterOption)();
-    private static Map!(string, OutputFormatterOption) availableBackgroundColors = new HashMap!(string, OutputFormatterOption)();
-    private static Map!(string, OutputFormatterOption) availableOptions = new HashMap!(string, OutputFormatterOption)();
+    private static Map!(string, OutputFormatterOption) availableForegroundColors;
+    private static Map!(string, OutputFormatterOption) availableBackgroundColors;
+    private static Map!(string, OutputFormatterOption) availableOptions;
 
-    static {
-
+    static this() {
+        availableForegroundColors = new HashMap!(string, OutputFormatterOption)();
+        availableBackgroundColors = new HashMap!(string, OutputFormatterOption)();
+        availableOptions = new HashMap!(string, OutputFormatterOption)();
         availableForegroundColors.put("black",   new OutputFormatterOption(30, 39));
         availableForegroundColors.put("red",     new OutputFormatterOption(31, 39));
         availableForegroundColors.put("green",   new OutputFormatterOption(32, 39));
@@ -41,25 +47,26 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
 
     private OutputFormatterOption foreground;
     private OutputFormatterOption background;
-    private List!(OutputFormatterOption) options = new ArrayList<>();
+    private List!(OutputFormatterOption) options ;
 
-    public DefaultOutputFormatterStyle()
+    public this()
     {
         this(null, null, null);
     }
 
-    public DefaultOutputFormatterStyle(string foreground)
+    public this(string foreground)
     {
         this(foreground, null, null);
     }
 
-    public DefaultOutputFormatterStyle(string foreground, string background)
+    public this(string foreground, string background)
     {
         this(foreground, background, null);
     }
 
-    public DefaultOutputFormatterStyle(string foreground, string background, string... options)
+    public this(string foreground, string background, string[] options)
     {
+        options = new ArrayList!OutputFormatterOption();
         if (foreground != null) {
             setForeground(foreground);
         }
@@ -131,9 +138,9 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         }
     }
 
-    override public void setOptions(string... options)
+    override public void setOptions(string[] options)
     {
-        this.options = new ArrayList<>();
+        this.options = new ArrayList!string();
 
         foreach (string option ; options) {
             setOption(option);
@@ -142,8 +149,8 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
 
     override public string apply(string text)
     {
-        List!(string) setCodes = new ArrayList<>();
-        List!(string) unsetCodes = new ArrayList<>();
+        List!(string) setCodes = new ArrayList!string();
+        List!(string) unsetCodes = new ArrayList!string();
 
         if (foreground != null) {
             setCodes.add(string.valueOf(foreground.getSet()));
@@ -171,12 +178,12 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         );
     }
 
-    override public boolean equals(Object o)
+    override public bool opEquals(Object o)
     {
         if (this == o) return true;
         if (!(cast(DefaultOutputFormatterStyle)o !is null)) return false;
 
-        DefaultOutputFormatterStyle that = (DefaultOutputFormatterStyle) o;
+        DefaultOutputFormatterStyle that = cast(DefaultOutputFormatterStyle) o;
 
         if (background != null ? !background == that.background : that.background != null) return false;
         if (foreground != null ? !foreground == that.foreground : that.foreground != null) return false;
@@ -185,7 +192,7 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         return true;
     }
 
-    override public size_t toHash() @trusted nothrow()
+    override public size_t toHash() @trusted nothrow
     {
         int result = foreground != null ? foreground.hashCode() : 0;
         result = 31 * result + (background != null ? background.hashCode() : 0);

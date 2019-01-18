@@ -6,26 +6,27 @@ import hunt.console.error.LogicException;
 import hunt.console.helper.HelperSet;
 import hunt.console.helper.ProgressBar;
 import hunt.console.helper.QuestionHelper;
-import hunt.console.input;
+import hunt.console.inputs;
 import hunt.console.output;
 import hunt.console.util.StringUtils;
 import hunt.console.util.ThrowableUtils;
 
-import hunt.io.common;
-import hunt.io.BufferedReader;
-import hunt.io.InputStreamReader;
+import hunt.io.Common;
+import hunt.collection.Map;
+// import hunt.io.BufferedReader;
+// import hunt.io.InputStreamReader;
 
 
 class Application
 {
     private Map!(string, Command) _commands;
-    private boolean _wantHelps;
+    private bool _wantHelps;
     private string _name;
     private string _version;
     private InputDefinition _definition;
-    private boolean _autoExit = true;
+    private bool _autoExit = true;
     private string _defaultCommand;
-    private boolean _catchExceptions = true;
+    private bool _catchExceptions = true;
     private Command _runningCommand;
     private Command[] _defaultCommands;
     private int[] _terminalDimensions;
@@ -176,12 +177,12 @@ class Application
         }
     }
 
-    public void setAutoExit(boolean autoExit)
+    public void setAutoExit(bool autoExit)
     {
         _autoExit = autoExit;
     }
 
-    public void setCatchExceptions(boolean catchExceptions)
+    public void setCatchExceptions(bool catchExceptions)
     {
         _catchExceptions = catchExceptions;
     }
@@ -357,7 +358,7 @@ class Application
         return command;
     }
 
-    public boolean has(string name)
+    public bool has(string name)
     {
         return _commands.containsKey(name);
     }

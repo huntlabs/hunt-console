@@ -3,8 +3,9 @@ module hunt.console.input.StringInput;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.util.StringUtils;
 
-import hunt.container.ArrayList;
-import hunt.container.List;
+import hunt.collection.ArrayList;
+import hunt.collection.List;
+import hunt.console.input.ArgvInput;
 
 import std.regex;
 
@@ -14,7 +15,7 @@ class StringInput : ArgvInput
 
     private static string REGEX_QUOTED_STRING = "(?:\"([^\"\\\\\\\\]*(?:\\\\\\\\.[^\"\\\\\\\\]*)*)\"|\\'([^\\'\\\\\\\\]*(?:\\\\\\\\.[^\\'\\\\\\\\]*)*)\\')";
 
-    public stringInput(string input)
+    public this(string input)
     {
         super(null);
 
@@ -23,7 +24,7 @@ class StringInput : ArgvInput
 
     private List!(string) tokenize(string input)
     {
-        List!(string) tokens = new ArrayList<>();
+        List!(string) tokens = new ArrayList!(string)();
         int length = input.length();
         string inputPart;
         string token;

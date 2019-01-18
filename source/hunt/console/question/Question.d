@@ -6,16 +6,16 @@ class Question
 {
     private string question;
     private int attempts;
-    private boolean hidden = false;
-    private boolean hiddenFallback = true;
+    private bool hidden = false;
+    private bool hiddenFallback = true;
     private string defaultValue;
 
-    public Question(string question)
+    public this(string question)
     {
         this(question, null);
     }
 
-    public Question(string question, string defaultValue)
+    public this(string question, string defaultValue)
     {
         this.question = question;
         this.defaultValue = defaultValue;
@@ -31,24 +31,24 @@ class Question
         return defaultValue;
     }
 
-    public boolean isHidden()
+    public bool isHidden()
     {
         return hidden;
     }
 
-    public Question setHidden(boolean hidden)
+    public Question setHidden(bool hidden)
     {
         this.hidden = hidden;
 
         return this;
     }
 
-    public boolean isHiddenFallback()
+    public bool isHiddenFallback()
     {
         return hiddenFallback;
     }
 
-    public Question setHiddenFallback(boolean hiddenFallback)
+    public Question setHiddenFallback(bool hiddenFallback)
     {
         this.hiddenFallback = hiddenFallback;
 

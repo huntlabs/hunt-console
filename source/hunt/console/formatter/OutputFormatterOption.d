@@ -1,4 +1,4 @@
-module hunt.console.formatter;
+module hunt.console.formatter.OutputFormatterOption;
 
 class OutputFormatterOption
 {
@@ -6,7 +6,7 @@ class OutputFormatterOption
 
     private int unset;
 
-    public OutputFormatterOption(int set, int unset)
+    public this(int set, int unset)
     {
         this.set = set;
         this.unset = unset;
@@ -22,12 +22,12 @@ class OutputFormatterOption
         return unset;
     }
 
-    override public boolean equals(Object o)
+    override public bool opEquals(Object o)
     {
         if (this == o) return true;
         if (!(cast(OutputFormatterOption)o !is null)) return false;
 
-        OutputFormatterOption that = (OutputFormatterOption) o;
+        OutputFormatterOption that = cast(OutputFormatterOption) o;
 
         if (set != that.set) return false;
         if (unset != that.unset) return false;
@@ -35,7 +35,7 @@ class OutputFormatterOption
         return true;
     }
 
-    override public size_t toHash() @trusted nothrow()
+    override public size_t toHash() @trusted nothrow
     {
         int result = set;
         result = 31 * result + unset;

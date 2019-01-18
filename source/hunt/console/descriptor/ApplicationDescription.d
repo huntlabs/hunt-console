@@ -4,18 +4,18 @@ import hunt.console.Application;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
 
-import hunt.container.ArrayList;
-import hunt.container.HashMap;
-import hunt.container.List;
-import hunt.container.Map;
+import hunt.collection.ArrayList;
+import hunt.collection.HashMap;
+import hunt.collection.List;
+import hunt.collection.Map;
 
 class ApplicationDescription
 {
     public static string GLOBAL_NAMESPACE = "_global";
 
-    private final Application application;
+    private  Application application;
 
-    private final string namespace;
+    private  string namespace;
 
     private Map!(string, List!(string)) namespaces;
 
@@ -23,12 +23,12 @@ class ApplicationDescription
 
     private Map!(string, Command) aliases;
 
-    public ApplicationDescription(Application application)
+    public this(Application application)
     {
         this(application, null);
     }
 
-    public ApplicationDescription(Application application, string namespace)
+    public this(Application application, string namespace)
     {
         this.application = application;
         this.namespace = namespace;

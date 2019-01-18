@@ -1,5 +1,6 @@
 module hunt.console.util.StringUtils;
 
+alias Character = char;
 class StringUtils
 {
     public static string repeat(string s, int n)
@@ -97,10 +98,10 @@ class StringUtils
      * Differs from String.split() in that it behaves like PHP's explode():
      * If s is the same string as c, the method returns an array with two elements both containing ""
      */
-    public static String[] split(string s, char c)
+    public static string[] split(string s, char c)
     {
         if (string.valueOf(c) == s) {
-            return new String[]{"", ""};
+            return ["",""];
         }
 
         return s.split(string.valueOf(c));

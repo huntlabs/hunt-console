@@ -7,8 +7,10 @@ import hunt.console.input.InputDefinition;
 import hunt.console.input.InputOption;
 import hunt.console.util.StringUtils;
 
-import hunt.container.List;
-import hunt.container.Map;
+import hunt.collection.List;
+import hunt.collection.Map;
+import hunt.console.descriptor.AbstractDescriptor;
+import hunt.console.descriptor.DescriptorOptions;
 
 class TextDescriptor : AbstractDescriptor
 {
@@ -124,7 +126,7 @@ class TextDescriptor : AbstractDescriptor
 
         int width = getColumnWidth(description.getCommands());
 
-        if (options.has("raw_text") && Boolean.parseBoolean(options.get("raw_text"))) {
+        if (options.has("raw_text") && bool.parsebool(options.get("raw_text"))) {
             foreach (Command command ; description.getCommands().values()) {
                 writeText(string.format("%-" ~ width ~ "s %s", command.getName(), command.getDescription()), options);
                 writeNewline();
@@ -165,8 +167,8 @@ class TextDescriptor : AbstractDescriptor
     private void writeText(string content, DescriptorOptions options)
     {
         write(
-            options.has("raw_text") && Boolean.parseBoolean("raw_text") ? StringUtils.stripTags(content) : content,
-            !options.has("raw_output") || !Boolean.parseBoolean(options.get("raw_output"))
+            options.has("raw_text") && bool.parsebool("raw_text") ? StringUtils.stripTags(content) : content,
+            !options.has("raw_output") || !bool.parsebool(options.get("raw_output"))
         );
     }
 

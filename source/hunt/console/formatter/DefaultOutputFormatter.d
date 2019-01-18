@@ -2,44 +2,50 @@ module hunt.console.formatter.DefaultOutputFormatter;
 
 import hunt.console.error.InvalidArgumentException;
 
-import hunt.container.HashMap;
-import hunt.container.Map;
+import hunt.collection.HashMap;
+import hunt.collection.Map;
+import hunt.console.formatter.OutputFormatter;
+import hunt.console.formatter.OutputFormatterStyle;
+import hunt.console.formatter.OutputFormatterStyleStack;
 
 import std.regex;
 
 class DefaultOutputFormatter : OutputFormatter
 {
-    private boolean decorated;
+    private bool decorated;
 
-    private Map!(string, OutputFormatterStyle) styles = new HashMap!(string, OutputFormatterStyle)();
+    private Map!(string, OutputFormatterStyle) styles ;
 
     private OutputFormatterStyleStack styleStack;
 
-    public static string TAG_REGEX = "[a-z][a-z0-9_=;-]*";
+    public const string TAG_REGEX = "[a-z][a-z0-9_=;-]*";
 
-    public static Pattern TAG_PATTERN = Pattern.compile("<((" ~ TAG_REGEX ~ ")|/(" ~ TAG_REGEX ~ ")?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+    public const string TAG_PATTERN = "<((" ~ TAG_REGEX ~ ")|/(" ~ TAG_REGEX ~ ")?)>";
 
-    public static Pattern STYLE_PATTERN = Pattern.compile("([^=]+)=([^;]+)(;|$)");
+    public const string STYLE_PATTERN = "([^=]+)=([^;]+)(;|$)";
 
     public static string escape(string text)
     {
-        Pattern pattern = Pattern.compile("([^\\\\\\\\]?)<", Pattern.DOTALL);
+        string pattern = "([^\\\\\\\\]?)<";
 
-        return pattern.matcher(text).replaceAll("$1\\\\<");
+        // return pattern.matcher(text).replaceAll("$1\\\\<");
+        auto re = regex(pattern, "g");
+        return text.replaceAll(re,"$1\\\\<");
     }
 
-    public DefaultOutputFormatter()
+    public this()
     {
         this(false);
     }
 
-    public DefaultOutputFormatter(boolean decorated)
+    public this(bool decorated)
     {
         this(decorated, new HashMap!(string, OutputFormatterStyle)());
     }
 
-    public DefaultOutputFormatter(boolean decorated, Map!(string, OutputFormatterStyle) styles)
+    public this(bool decorated, Map!(string, OutputFormatterStyle) styles)
     {
+        styles = new HashMap!(string, OutputFormatterStyle)();
         this.decorated = decorated;
 
         setStyle("error", new DefaultOutputFormatterStyle("white", "red"));
@@ -52,12 +58,12 @@ class DefaultOutputFormatter : OutputFormatter
         styleStack = new OutputFormatterStyleStack();
     }
 
-    override public void setDecorated(boolean decorated)
+    override public void setDecorated(bool decorated)
     {
         this.decorated = decorated;
     }
 
-    override public boolean isDecorated()
+    override public bool isDecorated()
     {
         return decorated;
     }
@@ -67,7 +73,7 @@ class DefaultOutputFormatter : OutputFormatter
         styles.put(name.toLowerCase(), style);
     }
 
-    override public boolean hasStyle(string name)
+    override public bool hasStyle(string name)
     {
         return styles.containsKey(name.toLowerCase());
     }
@@ -92,7 +98,7 @@ class DefaultOutputFormatter : OutputFormatter
 
         Matcher matcher = TAG_PATTERN.matcher(message);
 
-        boolean open;
+        bool open;
         string tag;
         OutputFormatterStyle style;
         while (matcher.find()) {

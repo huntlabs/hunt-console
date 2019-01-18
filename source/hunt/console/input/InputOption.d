@@ -17,27 +17,27 @@ class InputOption
     private string description;
     private string defaultValue;
 
-    public InputOption(string name)
+    public this(string name)
     {
         this(name, null, VALUE_NONE, null, null);
     }
 
-    public InputOption(string name, string shortcut)
+    public this(string name, string shortcut)
     {
         this(name, shortcut, VALUE_NONE, null, null);
     }
 
-    public InputOption(string name, string shortcut, int mode)
+    public this(string name, string shortcut, int mode)
     {
         this(name, shortcut, mode, null, null);
     }
 
-    public InputOption(string name, string shortcut, int mode, string description)
+    public this(string name, string shortcut, int mode, string description)
     {
         this(name, shortcut, mode, description, null);
     }
 
-    public InputOption(string name, string shortcut, int mode, string description, string defaultValue)
+    public this(string name, string shortcut, int mode, string description, string defaultValue)
     {
         if (name.startsWith("--")) {
             name = name.substring(2);
@@ -80,22 +80,22 @@ class InputOption
         return name;
     }
 
-    public boolean acceptValue()
+    public bool acceptValue()
     {
         return isValueRequired() || isValueOptional();
     }
 
-    public boolean isValueRequired()
+    public bool isValueRequired()
     {
         return (mode & VALUE_REQUIRED) == VALUE_REQUIRED;
     }
 
-    public boolean isValueOptional()
+    public bool isValueOptional()
     {
         return (mode & VALUE_OPTIONAL) == VALUE_OPTIONAL;
     }
 
-    public boolean isArray()
+    public bool isArray()
     {
         return (mode & VALUE_IS_ARRAY) == VALUE_IS_ARRAY;
     }
@@ -123,12 +123,12 @@ class InputOption
         return description;
     }
 
-    override public boolean equals(Object o)
+    override public bool opEquals(Object o)
     {
         if (this == o) return true;
         if (!(cast(InputOption)o !is null)) return false;
 
-        InputOption that = (InputOption) o;
+        InputOption that =cast(InputOption) o;
 
         if (isArray() != that.isArray()) return false;
         if (isValueRequired() != that.isValueRequired()) return false;
@@ -140,7 +140,7 @@ class InputOption
         return true;
     }
 
-    override public size_t toHash() @trusted nothrow()
+    override public size_t toHash() @trusted nothrow
     {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (shortcut != null ? shortcut.hashCode() : 0);

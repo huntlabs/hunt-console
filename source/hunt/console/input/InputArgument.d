@@ -14,22 +14,22 @@ class InputArgument
     private string description;
     private string defaultValue;
 
-    public InputArgument(string name)
+    public this(string name)
     {
         this(name, OPTIONAL, null, null);
     }
 
-    public InputArgument(string name, int mode)
+    public this(string name, int mode)
     {
         this(name, mode, null, null);
     }
 
-    public InputArgument(string name, int mode, string description)
+    public this(string name, int mode, string description)
     {
         this(name, mode, description, null);
     }
 
-    public InputArgument(string name, int mode, string description, string defaultValue)
+    public this(string name, int mode, string description, string defaultValue)
     {
         if (mode > 7 || mode < 1) {
             throw new InvalidArgumentException("Argument mode " + mode + " is not valid.");
@@ -47,12 +47,12 @@ class InputArgument
         return name;
     }
 
-    public boolean isRequired()
+    public bool isRequired()
     {
         return (mode & REQUIRED) == REQUIRED;
     }
 
-    public boolean isArray()
+    public bool isArray()
     {
         return (mode & IS_ARRAY) == IS_ARRAY;
     }

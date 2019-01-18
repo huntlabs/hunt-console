@@ -2,6 +2,9 @@ module hunt.console.output.NullOutput;
 
 import hunt.console.formatter.DefaultOutputFormatter;
 import hunt.console.formatter.OutputFormatter;
+import hunt.console.output.Output;
+import hunt.console.output.OutputType;
+import hunt.console.output.Verbosity;
 
 class NullOutput : Output
 {
@@ -10,12 +13,12 @@ class NullOutput : Output
         // do nothing
     }
 
-    override public void write(string message, boolean newline)
+    override public void write(string message, bool newline)
     {
         // do nothing
     }
 
-    override public void write(string message, boolean newline, OutputType type)
+    override public void write(string message, bool newline, OutputType type)
     {
         // do nothing
     }
@@ -40,42 +43,42 @@ class NullOutput : Output
         return Verbosity.QUIET;
     }
 
-    override public void setDecorated(boolean decorated)
+    override public void setDecorated(bool decorated)
     {
         // do nothing
     }
 
-    override public boolean isDecorated()
+    override public bool isDecorated()
     {
         return false;
     }
 
-    override public void setFormatter(OutputFormatter formatter)
+    /* override */ public void setFormatter(OutputFormatter formatter)
     {
         // do nothing
     }
 
-    override public OutputFormatter getFormatter()
+    /* override */ public OutputFormatter getFormatter()
     {
         return new DefaultOutputFormatter();
     }
 
-    public boolean isQuiet()
+    public bool isQuiet()
     {
         return true;
     }
 
-    public boolean isVerbose()
+    public bool isVerbose()
     {
         return false;
     }
 
-    public boolean isVeryVerbose()
+    public bool isVeryVerbose()
     {
         return false;
     }
 
-    public boolean isDebug()
+    public bool isDebug()
     {
         return false;
     }

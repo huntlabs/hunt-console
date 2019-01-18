@@ -7,22 +7,24 @@ import hunt.console.descriptor.DescriptorOptions;
 import hunt.console.descriptor.TextDescriptor;
 import hunt.console.output.Output;
 
-import hunt.container.HashMap;
-import hunt.container.Map;
+import hunt.collection.HashMap;
+import hunt.collection.Map;
+import hunt.console.helper.AbstractHelper;
 
 class DescriptorHelper : AbstractHelper
 {
-    private Map!(string, Descriptor) descriptors = new HashMap!(string, Descriptor)();
+    private Map!(string, Descriptor) descriptors;
 
-    public DescriptorHelper()
+    public this()
     {
+        descriptors = new HashMap!(string, Descriptor)();
         register("txt", new TextDescriptor());
         register("md", new MarkdownDescriptor());
     }
 
     public void describe(Output output, Object object, DescriptorOptions options)
     {
-        options.set("raw_text", Boolean.FALSE.toString(), false);
+        options.set("raw_text", bool.FALSE.toString(), false);
         options.set("format", "txt", false);
 
         if (!descriptors.containsKey(options.get("format"))) {
@@ -40,7 +42,7 @@ class DescriptorHelper : AbstractHelper
         return this;
     }
 
-    override public string getName()
+    /* override */ public string getName()
     {
         return "descriptor";
     }

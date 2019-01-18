@@ -11,8 +11,10 @@ import hunt.console.input.InputDefinition;
 import hunt.console.input.InputOption;
 import hunt.console.output.Output;
 
-import hunt.container.Collection;
-import hunt.container.List;
+import hunt.collection.Collection;
+import hunt.collection.List;
+
+import hunt.console.command.CommandExecutor;
 
 class Command
 {
@@ -22,9 +24,9 @@ class Command
     private InputDefinition definition;
     private string help;
     private string description;
-    private boolean ignoreValidationErrors = false;
-    private boolean applicationDefinitionMerged = false;
-    private boolean applicationDefinitionMergedWithArgs = false;
+    private bool _ignoreValidationErrors = false;
+    private bool applicationDefinitionMerged = false;
+    private bool applicationDefinitionMergedWithArgs = false;
     private string synopsis;
     private HelperSet helperSet;
     private CommandExecutor executor;
@@ -51,7 +53,7 @@ class Command
 
     public void ignoreValidationErrors()
     {
-        ignoreValidationErrors = true;
+        _ignoreValidationErrors = true;
     }
 
     public void setApplication(Application application)
@@ -90,7 +92,7 @@ class Command
      * Override this to check for x or y and return false if the command can not
      * run properly under the current conditions.
      */
-    public boolean isEnabled()
+    public bool isEnabled()
     {
         return true;
     }
@@ -145,7 +147,7 @@ class Command
         try {
             input.bind(definition);
         } catch (RuntimeException e) {
-            if (!ignoreValidationErrors) {
+            if (!_ignoreValidationErrors) {
                 throw e;
             }
         }
@@ -180,7 +182,7 @@ class Command
         mergeApplicationDefinition(true);
     }
 
-    public void mergeApplicationDefinition(boolean mergeArgs)
+    public void mergeApplicationDefinition(bool mergeArgs)
     {
         if (application == null || (applicationDefinitionMerged && (applicationDefinitionMergedWithArgs || !mergeArgs))) {
             return;
@@ -332,10 +334,10 @@ class Command
         return help;
     }
 
-    public Command setAliases(string... aliases)
+    public Command setAliases(string[] aliases)
     {
-        foreach (string alias ; aliases) {
-            validateName(alias);
+        foreach (a ; aliases) {
+            validateName(a);
         }
 
         this.aliases = aliases;

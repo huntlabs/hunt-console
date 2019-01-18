@@ -3,26 +3,33 @@ module hunt.console.input.InputDefinition;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
 
-import hunt.container.Map;
-import hunt.container.LinkedHashMap;
-import hunt.container.HashMap;
+import hunt.collection.Map;
+import hunt.collection.LinkedHashMap;
+import hunt.collection.HashMap;
+import hunt.console.input.InputArgument;
+import hunt.console.input.InputOption;
+import hunt.collection.Collection;
+import hunt.collection.List;
 
 class InputDefinition
 {
-    private Map!(string, InputArgument) arguments = new LinkedHashMap!(string, InputArgument)();
+    private Map!(string, InputArgument) arguments;
 
     private int requiredCount;
 
-    private boolean hasAnArrayArgument = false;
+    private bool hasAnArrayArgument = false;
 
-    private boolean hasOptional;
+    private bool hasOptional;
 
-    private Map!(string, InputOption) options = new HashMap!(string, InputOption)();
+    private Map!(string, InputOption) options;
 
-    private Map!(string, string) shortcuts = new HashMap!(string, string)();
+    private Map!(string, string) shortcuts;
 
-    public InputDefinition()
+    public this()
     {
+        arguments = new LinkedHashMap!(string, InputArgument)();
+         options = new HashMap!(string, InputOption)();
+         shortcuts = new HashMap!(string, string)();
         resetArguments();
     }
 
@@ -36,7 +43,7 @@ class InputDefinition
 
     public void setArguments(Collection!(InputArgument) arguments)
     {
-        setArguments(new ArrayList<>(arguments));
+        setArguments(new ArrayList!(InputArgument)(arguments));
     }
 
     public void setArguments(List!(InputArgument) arguments)
@@ -47,7 +54,7 @@ class InputDefinition
 
     public void addArguments(Collection!(InputArgument) arguments)
     {
-        addArguments(new ArrayList<>(arguments));
+        addArguments(new ArrayList!(InputArgument)(arguments));
     }
 
     public void addArguments(List!(InputArgument) arguments)
@@ -95,15 +102,15 @@ class InputDefinition
 
     public InputArgument getArgument(int pos)
     {
-        return (InputArgument) arguments.values().toArray()[pos];
+        return cast(InputArgument) arguments.values().toArray()[pos];
     }
 
-    public boolean hasArgument(string name)
+    public bool hasArgument(string name)
     {
         return arguments.containsKey(name);
     }
 
-    public boolean hasArgument(int pos)
+    public bool hasArgument(int pos)
     {
         return arguments.size() > pos;
     }
@@ -135,7 +142,7 @@ class InputDefinition
 
     public void setOptions(Collection!(InputOption) options)
     {
-        setOptions(new ArrayList<>(options));
+        setOptions(new ArrayList!(InputOption)(options));
     }
 
     public void setOptions(List!(InputOption) options)
@@ -147,7 +154,7 @@ class InputDefinition
 
     public void addOptions(Collection!(InputOption) options)
     {
-        addOptions(new ArrayList<>(options));
+        addOptions(new ArrayList!(InputOption)(options));
     }
 
     public void addOptions(List!(InputOption) options)
@@ -189,7 +196,7 @@ class InputDefinition
         return options.get(name);
     }
 
-    public boolean hasOption(string name)
+    public bool hasOption(string name)
     {
         return options.containsKey(name);
     }
@@ -199,7 +206,7 @@ class InputDefinition
         return options.values();
     }
 
-    public boolean hasShortcut(string name)
+    public bool hasShortcut(string name)
     {
         return shortcuts.containsKey(name);
     }

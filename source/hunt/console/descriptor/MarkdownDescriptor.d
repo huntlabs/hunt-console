@@ -7,8 +7,10 @@ import hunt.console.input.InputDefinition;
 import hunt.console.input.InputOption;
 import hunt.console.util.StringUtils;
 
-import hunt.container.List;
-import hunt.container.Map;
+import hunt.collection.List;
+import hunt.collection.Map;
+import hunt.console.descriptor.AbstractDescriptor;
+import hunt.console.descriptor.DescriptorOptions;
 
 class MarkdownDescriptor : AbstractDescriptor
 {
@@ -40,7 +42,7 @@ class MarkdownDescriptor : AbstractDescriptor
 
     override protected void describeInputDefinition(InputDefinition definition, DescriptorOptions options)
     {
-        boolean showArguments = definition.getArguments().size() > 0;
+        bool showArguments = definition.getArguments().size() > 0;
         if (showArguments) {
             write("### Arguments:");
             foreach (InputArgument argument ; definition.getArguments()) {

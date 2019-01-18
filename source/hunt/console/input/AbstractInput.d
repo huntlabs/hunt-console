@@ -2,22 +2,24 @@ module hunt.console.input.AbstractInput;
 
 import hunt.console.error.InvalidArgumentException;
 
-import hunt.container.HashMap;
-import hunt.container.Map;
+import hunt.collection.HashMap;
+import hunt.collection.Map;
+import hunt.console.input.Input;
+import hunt.console.input.InputDefinition;
 
 public abstract class AbstractInput : Input
 {
     protected InputDefinition definition;
     protected Map!(string, string) options;
     protected Map!(string, string) arguments;
-    protected boolean interactive = true;
+    protected bool interactive = true;
 
-    public AbstractInput()
+    public this()
     {
         this.definition = new InputDefinition();
     }
 
-    public AbstractInput(InputDefinition definition)
+    public this(InputDefinition definition)
     {
         bind(definition);
         validate();
@@ -41,12 +43,12 @@ public abstract class AbstractInput : Input
         }
     }
 
-    override public boolean isInteractive()
+    override public bool isInteractive()
     {
         return interactive;
     }
 
-    override public void setInteractive(boolean interactive)
+    override public void setInteractive(bool interactive)
     {
         this.interactive = interactive;
     }
@@ -59,7 +61,7 @@ public abstract class AbstractInput : Input
             argumentValues.put(argument.getKey(), argument.getValue());
         }
 
-        return (string[]) argumentValues.values().toArray();
+        return cast(string[]) argumentValues.values().toArray();
     }
 
     override public string getArgument(string name)
@@ -75,7 +77,7 @@ public abstract class AbstractInput : Input
         return definition.getArgument(name).getDefaultValue();
     }
 
-    override public void setArgument(string name, string value) throws InvalidArgumentException
+    override public void setArgument(string name, string value) /* throws InvalidArgumentException */
     {
         if (!definition.hasArgument(name)) {
             throw new InvalidArgumentException(string.format("The '%s' argument does not exist.", name));
@@ -84,7 +86,7 @@ public abstract class AbstractInput : Input
         arguments.put(name, value);
     }
 
-    override public boolean hasArgument(string name)
+    override public bool hasArgument(string name)
     {
         return definition.hasArgument(name);
     }
@@ -97,7 +99,7 @@ public abstract class AbstractInput : Input
             optionValues.put(option.getKey(), option.getValue());
         }
 
-        return (string[]) optionValues.values().toArray();
+        return cast(string[]) optionValues.values().toArray();
     }
 
     override public string getOption(string name)
@@ -113,7 +115,7 @@ public abstract class AbstractInput : Input
         return definition.getOption(name).getDefaultValue();
     }
 
-    override public void setOption(string name, string value) throws InvalidArgumentException
+    override public void setOption(string name, string value) /* throws InvalidArgumentException */
     {
         if (!definition.hasOption(name)) {
             throw new InvalidArgumentException(string.format("The '%s' option does not exist.", name));
@@ -122,7 +124,7 @@ public abstract class AbstractInput : Input
         options.put(name, value);
     }
 
-    override public boolean hasOption(string name)
+    override public bool hasOption(string name)
     {
         return definition.hasOption(name);
     }

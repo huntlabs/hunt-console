@@ -2,22 +2,24 @@ module hunt.console.input.ArrayInput;
 
 import hunt.console.error.InvalidArgumentException;
 
-import hunt.container.HashMap;
-import hunt.container.LinkedHashMap;
-import hunt.container.Map;
+import hunt.collection.HashMap;
+import hunt.collection.LinkedHashMap;
+import hunt.collection.Map;
+import hunt.console.input.AbstractInput;
+import hunt.console.input.InputDefinition;
 
 class ArrayInput : AbstractInput
 {
     private Map!(string, string) parameters;
 
-    public ArrayInput()
+    public this()
     {
         this(new HashMap!(string, string)());
     }
 
-    public ArrayInput(string... nameValues)
+    public this(string[] nameValues)
     {
-        parameters = new LinkedHashMap<>();
+        parameters = new LinkedHashMap!(string, string)();
         string name = null, value;
         foreach (string nameOrValue ; nameValues) {
             if (name == null) {
@@ -30,13 +32,13 @@ class ArrayInput : AbstractInput
         }
     }
 
-    public ArrayInput(Map!(string, string) parameters)
+    public this(Map!(string, string) parameters)
     {
         super();
         this.parameters = parameters;
     }
 
-    public ArrayInput(Map!(string, string) parameters, InputDefinition definition)
+    public this(Map!(string, string) parameters, InputDefinition definition)
     {
         super(definition);
         this.parameters = parameters;
@@ -95,7 +97,7 @@ class ArrayInput : AbstractInput
         arguments.put(name, value);
     }
 
-    override public string getFirstArgument()
+    /* override */ public string getFirstArgument()
     {
         foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             if (parameter.getKey().startsWith("-")) {
@@ -107,7 +109,7 @@ class ArrayInput : AbstractInput
         return null;
     }
 
-    override public boolean hasParameterOption(string... values)
+    /* override */ public bool hasParameterOption(string[] values)
     {
         foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             foreach (string value ; values) {
@@ -120,12 +122,12 @@ class ArrayInput : AbstractInput
         return false;
     }
 
-    override public string getParameterOption(string value)
+    /* override */ public string getParameterOption(string value)
     {
         return getParameterOption(value, null);
     }
 
-    override public string getParameterOption(string value, string defaultValue)
+    /* override */ public string getParameterOption(string value, string defaultValue)
     {
         foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
             if (parameter.getKey() == value) {

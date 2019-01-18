@@ -4,9 +4,13 @@ import hunt.console.input.Input;
 import hunt.console.output.Output;
 import hunt.console.question.ChoiceQuestion;
 import hunt.console.question.Question;
+import hunt.console.helper.AbstractHelper;
 
-import hunt.io.InputStream;
-import hunt.container.Scanner;
+import hunt.io.Common;
+// import hunt.collection.Scanner;
+import hunt.Exceptions;
+import hunt.io.FileInputStream;
+import std.stdio;
 
 class QuestionHelper : AbstractHelper
 {
@@ -23,7 +27,7 @@ class QuestionHelper : AbstractHelper
 
     protected string doAsk(Output output, Question question)
     {
-        InputStream inputStream = this.inputStream == null ? System.in : this.inputStream;
+        InputStream inputStream = this.inputStream == null ? new FileInputStream(stdin) : this.inputStream;
 
         string message = question.getQuestion();
         if (cast(ChoiceQuestion)question !is null) {
@@ -34,14 +38,16 @@ class QuestionHelper : AbstractHelper
 
         string answer;
         if (question.isHidden()) {
-            Console console = System.console();
-            if (console == null) {
-                throw new RuntimeException("Unable to hide input (console not available)");
-            }
-            answer = String.valueOf(console.readPassword());
+            // Console console = System.console();
+            // if (console == null) {
+            //     throw new RuntimeException("Unable to hide input (console not available)");
+            // }
+            // answer = String.valueOf(console.readPassword());
+            implementationMissing();
         } else {
-            Scanner scanner = new Scanner(inputStream);
-            answer = scanner.next();
+            implementationMissing();
+            // Scanner scanner = new Scanner(inputStream);
+            // answer = scanner.next();
         }
 
         if (answer == null || answer.isEmpty()) {
@@ -61,7 +67,7 @@ class QuestionHelper : AbstractHelper
         this.inputStream = inputStream;
     }
 
-    override public string getName()
+    /* override */ public string getName()
     {
         return "question";
     }

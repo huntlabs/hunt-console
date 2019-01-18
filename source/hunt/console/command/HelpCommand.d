@@ -7,6 +7,7 @@ import hunt.console.input.InputArgument;
 import hunt.console.input.InputDefinition;
 import hunt.console.input.InputOption;
 import hunt.console.output.Output;
+import hunt.console.command.Command;
 
 class HelpCommand : Command
 {

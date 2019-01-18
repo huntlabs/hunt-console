@@ -6,13 +6,13 @@ class TimeFormat
     private string name;
     private int div;
 
-    public TimeFormat(int seconds, string name)
+    public this(int seconds, string name)
     {
         this.seconds = seconds;
         this.name = name;
     }
 
-    public TimeFormat(int seconds, string name, int div)
+    public this(int seconds, string name, int div)
     {
         this.seconds = seconds;
         this.name = name;

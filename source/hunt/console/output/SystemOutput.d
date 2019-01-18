@@ -1,31 +1,37 @@
 module hunt.console.output.SystemOutput;
 
 import hunt.console.formatter.OutputFormatter;
+import std.stdio;
+import hunt.io.FileOutputStream;
+import hunt.console.output.StreamOutput;
+import hunt.console.output.Verbosity;
+import hunt.console.output.Output;
+import hunt.console.output.ConsoleOutput;
 
-class SystemOutput : StreamOutput : ConsoleOutput
+class SystemOutput : StreamOutput , ConsoleOutput
 {
     private Output stderr;
 
-    public SystemOutput()
+    public this()
     {
-        super(System.out);
+        super(new FileOutputStream(stdout));
         initialize();
     }
 
-    public SystemOutput(Verbosity verbosity)
+    public this(Verbosity verbosity)
     {
-        super(System.out, verbosity);
+        super(new FileOutputStream(stdout), verbosity);
         initialize();
     }
 
-    public SystemOutput(Verbosity verbosity, boolean decorated)
+    public this(Verbosity verbosity, bool decorated)
     {
-        super(System.out, verbosity, decorated);
+        super(new FileOutputStream(stdout), verbosity, decorated);
     }
 
-    public SystemOutput(Verbosity verbosity, boolean decorated, OutputFormatter formatter)
+    public this(Verbosity verbosity, bool decorated, OutputFormatter formatter)
     {
-        super(System.out, verbosity, decorated, formatter);
+        super(new FileOutputStream(stdout), verbosity, decorated, formatter);
     }
 
     private void initialize()
@@ -33,7 +39,7 @@ class SystemOutput : StreamOutput : ConsoleOutput
         this.stderr = new StreamOutput(System.err);
     }
 
-    override public void setDecorated(boolean decorated)
+    override public void setDecorated(bool decorated)
     {
         super.setDecorated(decorated);
         stderr.setDecorated(decorated);

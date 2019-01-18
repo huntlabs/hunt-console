@@ -1,10 +1,10 @@
-module hunt.console.input.pacakge;
+module hunt.console.inputs;
 
-public import module hunt.console.input.AbstractInput;
-public import module hunt.console.input.ArgvInput;
-public import module hunt.console.input.ArrayInput;
-public import module hunt.console.input.Input;
-public import module hunt.console.input.InputArgument;
-public import module hunt.console.input.InputDefinition;
-public import module hunt.console.input.InputOption;
-public import module hunt.console.input.StringInput;
+public import  hunt.console.input.AbstractInput;
+public import  hunt.console.input.ArgvInput;
+public import  hunt.console.input.ArrayInput;
+public import  hunt.console.input.Input;
+public import  hunt.console.input.InputArgument;
+public import  hunt.console.input.InputDefinition;
+public import  hunt.console.input.InputOption;
+public import  hunt.console.input.StringInput;

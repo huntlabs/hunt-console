@@ -1,8 +1,10 @@
 module hunt.console.error.InvalidArgumentException;
 
+import hunt.Exceptions;
+
 class InvalidArgumentException : RuntimeException
 {
-    public InvalidArgumentException(string message)
+    public this(string message)
     {
         super(message);
     }

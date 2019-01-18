@@ -1,9 +1,9 @@
 module hunt.console.error.LogicException;
 
-
+import hunt.Exceptions;
 class LogicException : RuntimeException
 {
-    public LogicException(string message)
+    public this(string message)
     {
         super(message);
     }

@@ -5,6 +5,7 @@ import hunt.console.input.Input;
 import hunt.console.input.InputArgument;
 import hunt.console.output.Output;
 import hunt.console.question.Question;
+import hunt.console.command.Command;
 
 class GreetingCommand : Command
 {
@@ -32,7 +33,7 @@ class GreetingCommand : Command
     override protected void interact(Input input, Output output)
     {
         if (input.getArgument("name") == null) {
-            string name = ((QuestionHelper) getHelper("question"))
+            string name = (cast(QuestionHelper) (getHelper("question")))
                     .ask(input, output, new Question("What is your name?"));
             input.setArgument("name", name);
         }

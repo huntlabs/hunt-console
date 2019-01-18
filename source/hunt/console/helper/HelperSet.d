@@ -3,23 +3,27 @@ module hunt.console.helper.HelperSet;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
 
-import hunt.container.HashMap;
-import hunt.container.Iterator;
-import hunt.container.List;
-import hunt.container.Map;
+import hunt.collection.HashMap;
+import hunt.collection.Iterator;
+import hunt.collection.List;
+import hunt.collection.Map;
+import hunt.util.Common;
+import hunt.console.helper.Helper;
 
 class HelperSet : Iterable!(Helper)
 {
-    private Map!(string, Helper) helpers = new HashMap!(string, Helper)();
+    private Map!(string, Helper) helpers;
 
     private Command command;
 
-    public HelperSet()
+    public this()
     {
+        helpers = new HashMap!(string, Helper)();
     }
 
-    public HelperSet(List!(Helper) helpers)
+    public this(List!(Helper) helpers)
     {
+        helpers = new HashMap!(string, Helper)();
         foreach (Helper helper ; helpers) {
             set(helper);
         }
@@ -30,17 +34,17 @@ class HelperSet : Iterable!(Helper)
         set(helper, null);
     }
 
-    public void set(Helper helper, string alias)
+    public void set(Helper helper, string aliasName)
     {
         helpers.put(helper.getName(), helper);
-        if (alias != null) {
-            helpers.put(alias, helper);
+        if (aliasName != null) {
+            helpers.put(aliasName, helper);
         }
 
         helper.setHelperSet(this);
     }
 
-    public boolean has(string name)
+    public bool has(string name)
     {
         return helpers.containsKey(name);
     }

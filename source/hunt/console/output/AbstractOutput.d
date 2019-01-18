@@ -3,6 +3,9 @@ module hunt.console.output.AbstractOutput;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.formatter.DefaultOutputFormatter;
 import hunt.console.formatter.OutputFormatter;
+import hunt.console.output.Output;
+import hunt.console.output.Verbosity;
+import hunt.console.output.OutputType;
 
 /**
  * Base class for output classes.
@@ -20,44 +23,44 @@ public abstract class AbstractOutput : Output
     private Verbosity verbosity;
     private OutputFormatter formatter;
 
-    public AbstractOutput()
+    public this()
     {
         this(Verbosity.NORMAL);
     }
 
-    public AbstractOutput(Verbosity verbosity)
+    public this(Verbosity verbosity)
     {
         this(verbosity, true);
     }
 
-    public AbstractOutput(Verbosity verbosity, boolean decorated)
+    public this(Verbosity verbosity, bool decorated)
     {
         this(verbosity, decorated, new DefaultOutputFormatter());
     }
 
-    public AbstractOutput(Verbosity verbosity, boolean decorated, OutputFormatter formatter)
+    public this(Verbosity verbosity, bool decorated, OutputFormatter formatter)
     {
         this.verbosity = verbosity;
         this.formatter = formatter;
         this.formatter.setDecorated(decorated);
     }
 
-    override public void setFormatter(OutputFormatter formatter)
+    /* override */ public void setFormatter(OutputFormatter formatter)
     {
         this.formatter = formatter;
     }
 
-    override public OutputFormatter getFormatter()
+    /* override */ public OutputFormatter getFormatter()
     {
         return formatter;
     }
 
-    override public void setDecorated(boolean decorated)
+    override public void setDecorated(bool decorated)
     {
         formatter.setDecorated(decorated);
     }
 
-    override public boolean isDecorated()
+    override public bool isDecorated()
     {
         return formatter.isDecorated();
     }
@@ -72,22 +75,22 @@ public abstract class AbstractOutput : Output
         return verbosity;
     }
 
-    public boolean isQuiet()
+    public bool isQuiet()
     {
         return verbosity == Verbosity.QUIET;
     }
 
-    public boolean isVerbose()
+    public bool isVerbose()
     {
         return verbosity.ordinal() >= Verbosity.VERBOSE.ordinal();
     }
 
-    public boolean isVeryVerbose()
+    public bool isVeryVerbose()
     {
         return verbosity.ordinal() >= Verbosity.VERY_VERBOSE.ordinal();
     }
 
-    public boolean isDebug()
+    public bool isDebug()
     {
         return verbosity.ordinal() >= Verbosity.DEBUG.ordinal();
     }
@@ -97,12 +100,12 @@ public abstract class AbstractOutput : Output
         write(message, false);
     }
 
-    override public void write(string message, boolean newline)
+    override public void write(string message, bool newline)
     {
         write(message, newline, OutputType.NORMAL);
     }
 
-    override public void write(string message, boolean newline, OutputType type)
+    override public void write(string message, bool newline, OutputType type)
     {
         if (isQuiet()) {
             return;
@@ -140,5 +143,5 @@ public abstract class AbstractOutput : Output
      * @param message A message to write to the output
      * @param newline Whether to add a newline or not
      */
-    abstract protected void doWrite(string message, boolean newline);
+    abstract protected void doWrite(string message, bool newline);
 }

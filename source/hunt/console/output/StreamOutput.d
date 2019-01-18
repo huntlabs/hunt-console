@@ -2,33 +2,37 @@ module hunt.console.output.StreamOutput;
 
 import hunt.console.formatter.OutputFormatter;
 
-import hunt.io.OutputStream;
-import hunt.io.PrintWriter;
+import hunt.io.Common;
+import hunt.io.FileOutputStream;
+// import hunt.io.PrintWriter;
+import hunt.console.output.AbstractOutput;
+import hunt.console.output.Verbosity;
+import hunt.console.output.Output;
 
 class StreamOutput : AbstractOutput
 {
     private OutputStream stream;
-    private PrintWriter writer;
+    private FileOutputStream writer;
 
-    public StreamOutput(OutputStream stream)
+    public this(OutputStream stream)
     {
         super();
         initialize(stream);
     }
 
-    public StreamOutput(OutputStream stream, Verbosity verbosity)
+    public this(OutputStream stream, Verbosity verbosity)
     {
         super(verbosity);
         initialize(stream);
     }
 
-    public StreamOutput(OutputStream stream, Verbosity verbosity, boolean decorated)
+    public this(OutputStream stream, Verbosity verbosity, bool decorated)
     {
         super(verbosity, decorated);
         initialize(stream);
     }
 
-    public StreamOutput(OutputStream stream, Verbosity verbosity, boolean decorated, OutputFormatter formatter)
+    public this(OutputStream stream, Verbosity verbosity, bool decorated, OutputFormatter formatter)
     {
         super(verbosity, decorated, formatter);
         initialize(stream);
@@ -42,15 +46,15 @@ class StreamOutput : AbstractOutput
     private void initialize(OutputStream stream)
     {
         this.stream = stream;
-        writer = new PrintWriter(stream);
+        writer = new FileOutputStream(stream);
     }
 
-    override protected void doWrite(string message, boolean newline)
+    override protected void doWrite(string message, bool newline)
     {
-        writer.print(message);
+        writer.write(message);
 
         if (newline) {
-            writer.println();
+            writer.write('\n');
         }
 
         writer.flush();

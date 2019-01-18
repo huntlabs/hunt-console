@@ -5,9 +5,10 @@ import hunt.console.output.Output;
 import hunt.console.output.Verbosity;
 import hunt.console.util.StringUtils;
 
-import hunt.container.Arrays;
-import hunt.container.HashMap;
-import hunt.container.Map;
+// import hunt.collection.Arrays;
+import hunt.collection.HashMap;
+import hunt.collection.Map;
+import hunt.console.helper.PlaceholderFormatter;
 
 import std.regex;
 
@@ -24,30 +25,31 @@ class ProgressBar
     private Output output;
     private int step = 0;
     private int max;
-    private Date startTime;
+    private long startTime;
     private int stepWidth;
     private float percent = 0f;
     private int lastMessagesLength = 0;
     private int formatLineCount;
-    private Map!(string, string) messages = new HashMap<>();
-    private boolean overwrite = true;
+    private Map!(string, string) messages ;
+    private bool _overwrite = true;
 
     private static Map!(string, PlaceholderFormatter) formatters;
     private static Map!(string, string) formats;
 
-    public ProgressBar(Output output)
+    public this(Output output)
     {
+        messages = new HashMap!(string, string)();
         this(output, 0);
     }
 
-    public ProgressBar(Output output, int max)
+    public this(Output output, int max)
     {
         this.output = output;
         setMaxSteps(max);
 
         if (!this.output.isDecorated()) {
-            // disable overwrite when output does not support ANSI codes.
-            overwrite = false;
+            // disable _overwrite when output does not support ANSI codes.
+            _overwrite = false;
 
             if (this.max > 10) {
                 // set a reasonable redraw frequency so output isn't flooded
@@ -57,7 +59,7 @@ class ProgressBar
 
         setFormat(determineBestFormat());
 
-        startTime = new Date();
+        startTime = DateTimeHelper.currentTimeMillis();
     }
 
     public static void setPlaceholderFormatter(string name, PlaceholderFormatter formatter)
@@ -116,7 +118,7 @@ class ProgressBar
         return messages.get(name);
     }
 
-    public Date getStartTime()
+    public long getStartTime()
     {
         return startTime;
     }
@@ -211,7 +213,7 @@ class ProgressBar
 
     public void start(int max)
     {
-        startTime = new Date();
+        startTime = DateTimeHelper.currentTimeMillis();
         step = 0;
         percent = 0f;
 
@@ -237,9 +239,9 @@ class ProgressBar
         setProgress(step);
     }
 
-    public void setOverwrite(boolean overwrite)
+    public void setOverwrite(bool overwrite)
     {
-        this.overwrite = overwrite;
+        this._overwrite = overwrite;
     }
 
     public void setProgress(int step)
@@ -255,7 +257,7 @@ class ProgressBar
         int prevPeriod = this.step / redrawFreq;
         int currPeriod = step / redrawFreq;
         this.step = step;
-        percent = (max != null && max > 0) ? ((float) step) / max : 0f;
+        percent = (max != null && max > 0) ? (cast(float) step) / max : 0f;
         if (prevPeriod != currPeriod || (max != null && max == step)) {
             display();
         }
@@ -267,7 +269,7 @@ class ProgressBar
             max = step;
         }
 
-        if (step == max && !overwrite) {
+        if (step == max && !_overwrite) {
             // prevent double 100% output
             return;
         }
@@ -308,7 +310,7 @@ class ProgressBar
 
     public void clear()
     {
-        if (!overwrite) {
+        if (!_overwrite) {
             return;
         }
 
@@ -337,7 +339,7 @@ class ProgressBar
             }
         }
 
-        if (overwrite) {
+        if (_overwrite) {
             // move back to the beginning of the progress bar before redrawing it
             output.write("\r");
         } else if (step > 0) {
@@ -375,13 +377,13 @@ class ProgressBar
 
     public static Map!(string, PlaceholderFormatter) initPlaceholderFormatters()
     {
-        Map!(string, PlaceholderFormatter) formatters = new HashMap<>();
+        Map!(string, PlaceholderFormatter) formatters = new HashMap!(string, PlaceholderFormatter)();
 
-        formatters.put("bar", new PlaceholderFormatter()
+        formatters.put("bar", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
-                int completeBars = bar.getMaxSteps() > 0 ? (int) (bar.getProgressPercent() * bar.getBarWidth()) : bar.getProgress() % bar.getBarWidth();
+                int completeBars = bar.getMaxSteps() > 0 ? cast(int) (bar.getProgressPercent() * bar.getBarWidth()) : bar.getProgress() % bar.getBarWidth();
                 string display = StringUtils.padRight("", completeBars, bar.getBarCharacter());
                 if (completeBars < bar.getBarWidth()) {
                     int emptyBars = bar.getBarWidth() - completeBars - AbstractHelper.strlenWithoutDecoration(output.getFormatter(), string.valueOf(bar.getProgressCharacter()));
@@ -392,15 +394,15 @@ class ProgressBar
             }
         });
 
-        formatters.put("elapsed", new PlaceholderFormatter()
+        formatters.put("elapsed", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return AbstractHelper.formatTime(Math.round(((new Date()).getTime() / 1000) - (bar.getStartTime().getTime() / 1000)));
+                return AbstractHelper.formatTime(Math.round(( DateTimeHelper.currentTimeMillis() / 1000) - (bar.getStartTime() / 1000)));
             }
         });
 
-        formatters.put("remaining", new PlaceholderFormatter()
+        formatters.put("remaining", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
@@ -412,14 +414,14 @@ class ProgressBar
                 if (bar.getProgress() == 0) {
                     remaining = 0;
                 } else {
-                    remaining = Math.round((float) ((new Date()).getTime() / 1000 - bar.getStartTime().getTime() / 1000) / (float) bar.getProgress() * ((float) bar.getMaxSteps() - (float) bar.getProgress()));
+                    remaining = Math.round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * (cast(float) bar.getMaxSteps() - cast(float) bar.getProgress()));
                 }
 
                 return AbstractHelper.formatTime(remaining);
             }
         });
 
-        formatters.put("estimated", new PlaceholderFormatter()
+        formatters.put("estimated", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
@@ -431,14 +433,14 @@ class ProgressBar
                 if (bar.getProgress() == 0) {
                     estimated = 0;
                 } else {
-                    estimated = Math.round((float) ((new Date()).getTime() / 1000 - bar.getStartTime().getTime() / 1000) / (float) bar.getProgress() * (float) bar.getMaxSteps());
+                    estimated = Math.round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * cast(float) bar.getMaxSteps());
                 }
 
                 return AbstractHelper.formatTime(estimated);
             }
         });
 
-        formatters.put("memory", new PlaceholderFormatter()
+        formatters.put("memory", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
@@ -446,7 +448,7 @@ class ProgressBar
             }
         });
 
-        formatters.put("current", new PlaceholderFormatter()
+        formatters.put("current", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
@@ -454,7 +456,7 @@ class ProgressBar
             }
         });
 
-        formatters.put("max", new PlaceholderFormatter()
+        formatters.put("max", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
@@ -462,11 +464,11 @@ class ProgressBar
             }
         });
 
-        formatters.put("percent", new PlaceholderFormatter()
+        formatters.put("percent", new class PlaceholderFormatter
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return String.valueOf((int) (bar.getProgressPercent() * 100));
+                return String.valueOf(cast(int) (bar.getProgressPercent() * 100));
             }
         });
 
@@ -475,7 +477,7 @@ class ProgressBar
 
     private static Map!(string, string) initFormats()
     {
-        Map!(string, string) formats = new HashMap<>();
+        Map!(string, string) formats = new HashMap!(string, string)();
 
         formats.put("normal", " %current%/%max% [%bar%] %percent:3s%%");
         formats.put("normal_nomax", " %current% [%bar%]");

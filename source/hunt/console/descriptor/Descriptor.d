@@ -1,6 +1,7 @@
 module hunt.console.descriptor.Descriptor;
 
 import hunt.console.output.Output;
+import hunt.console.descriptor.DescriptorOptions;
 
 public interface Descriptor
 {

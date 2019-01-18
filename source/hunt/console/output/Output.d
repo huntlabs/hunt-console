@@ -1,14 +1,17 @@
 module hunt.console.output.Output;
 
-import hunt.console.formatter.OutputFormatter;
+import hunt.console.output.OutputType;
+
+import hunt.console.output.Verbosity;
+import hunt.console.output.OutputFormatter;
 
 public interface Output
 {
     public void write(string message);
 
-    public void write(string message, boolean newline);
+    public void write(string message, bool newline);
 
-    public void write(string message, boolean newline, OutputType type);
+    public void write(string message, bool newline, OutputType type);
 
     public void writeln(string message);
 
@@ -18,9 +21,9 @@ public interface Output
 
     public Verbosity getVerbosity();
 
-    public void setDecorated(boolean decorated);
+    public void setDecorated(bool decorated);
 
-    public boolean isDecorated();
+    public bool isDecorated();
 
     public void setFormatter(OutputFormatter formatter);
 

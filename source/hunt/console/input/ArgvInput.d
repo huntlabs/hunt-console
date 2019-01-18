@@ -1,25 +1,27 @@
 module hunt.console.input.ArgvInput;
 
-import hunt.container.ArrayList;
-import hunt.container.Arrays;
-import hunt.container.List;
+import hunt.collection.ArrayList;
+// import hunt.collection.Arrays;
+import hunt.collection.List;
+import hunt.console.input.AbstractInput;
+import hunt.console.input.InputDefinition;
 
 class ArgvInput : AbstractInput
 {
     private List!(string) tokens;
     private List!(string) parsed;
 
-    public ArgvInput(string[] args)
+    public this(string[] args)
     {
         this(args, null);
     }
 
-    public ArgvInput(string[] args, InputDefinition definition)
+    public this(string[] args, InputDefinition definition)
     {
         this(new ArrayList!(string)(Arrays.asList(args)), definition);
     }
 
-    public ArgvInput(List!(string) args, InputDefinition definition)
+    public this(List!(string) args, InputDefinition definition)
     {
         tokens = args;
 
@@ -38,7 +40,7 @@ class ArgvInput : AbstractInput
 
     override protected void parse()
     {
-        boolean parseOptions = true;
+        bool parseOptions = true;
         parsed = tokens;
         foreach (string token ; parsed) {
             if (parseOptions && token.equals("")) {
@@ -179,7 +181,7 @@ class ArgvInput : AbstractInput
     /**
      * Returns the first argument from the raw parameters (not parsed).
      */
-    override public string getFirstArgument()
+    /* override */ public string getFirstArgument()
     {
         foreach (string token ; tokens) {
             if (!token.isEmpty() && token[0] == '-') {
@@ -198,7 +200,7 @@ class ArgvInput : AbstractInput
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
      */
-    override public boolean hasParameterOption(string... values)
+    /* override */ public bool hasParameterOption(string[] values)
     {
         foreach (string token ; tokens) {
             foreach (string value ; values) {
@@ -211,7 +213,7 @@ class ArgvInput : AbstractInput
         return false;
     }
 
-    override public string getParameterOption(string value)
+    /* override */ public string getParameterOption(string value)
     {
         return getParameterOption(value, null);
     }
@@ -222,7 +224,7 @@ class ArgvInput : AbstractInput
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully
      */
-    override public string getParameterOption(string value, string defaultValue)
+    /* override */ public string getParameterOption(string value, string defaultValue)
     {
         List!(string) tokens = new ArrayList!(string)(this.tokens);
         int len = tokens.size();

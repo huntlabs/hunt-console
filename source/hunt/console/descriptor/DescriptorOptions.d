@@ -1,18 +1,22 @@
 module hunt.console.descriptor.DescriptorOptions;
 
-import hunt.container.HashMap;
-import hunt.container.Map;
+import hunt.collection.HashMap;
+import hunt.collection.Map;
+import hunt.util.Common;
 
 class DescriptorOptions : Cloneable
 {
-    private Map!(string, string) options = new HashMap!(string, string)();
+    private Map!(string, string) options;
 
-    public DescriptorOptions()
+
+    public this()
     {
+        options = new HashMap!(string, string)();
     }
 
-    private DescriptorOptions(DescriptorOptions options)
+    private this(DescriptorOptions options)
     {
+        options = new HashMap!(string, string)();
         this.options.putAll(options.options);
     }
 
@@ -21,7 +25,7 @@ class DescriptorOptions : Cloneable
         return set(name, value, true);
     }
 
-    public DescriptorOptions set(string name, string value, boolean overwrite)
+    public DescriptorOptions set(string name, string value, bool overwrite)
     {
         if (overwrite || !options.containsKey(name)) {
             options.put(name, value);
@@ -35,7 +39,7 @@ class DescriptorOptions : Cloneable
         return options.get(name);
     }
 
-    public boolean has(string name)
+    public bool has(string name)
     {
         return options.containsKey(name);
     }
