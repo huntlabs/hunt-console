@@ -1,5 +1,7 @@
 module hunt.console.descriptor.TextDescriptor;
 
+import std.string;
+import std.conv;
 import hunt.console.Application;
 import hunt.console.command.Command;
 import hunt.console.input.InputArgument;
@@ -9,40 +11,44 @@ import hunt.console.util.StringUtils;
 
 import hunt.collection.List;
 import hunt.collection.Map;
+import hunt.math.Helper;
+import hunt.Integer;
+import hunt.Boolean;
 import hunt.console.descriptor.AbstractDescriptor;
 import hunt.console.descriptor.DescriptorOptions;
+import hunt.console.descriptor.ApplicationDescription;
 
 class TextDescriptor : AbstractDescriptor
 {
     override protected void describeInputArgument(InputArgument argument, DescriptorOptions options)
     {
         string defaultValue = "";
-        if (argument.getDefaultValue() != null) {
-            defaultValue = String.format("<comment> (default: %s)</comment>", argument.getDefaultValue());
+        if (argument.getDefaultValue() !is null) {
+            defaultValue = format("<comment> (default: %s)</comment>", argument.getDefaultValue());
         }
 
-        int nameWidth = options.has("name_width") ? Integer.valueOf(options.get("name_width")) : argument.getName().length();
+        int nameWidth = options.has("name_width") ? Integer.valueOf(options.get("name_width")).intValue() : cast(int)(argument.getName().length);
 
-        writeText(string.format(" <info>%-" ~ nameWidth ~ "s</info> %s%s",
+        writeText(format(" <info>%-" ~ nameWidth.to!string ~ "s</info> %s%s",
                 argument.getName(),
-                argument.getDescription() == null ? "" : argument.getDescription().replace("\\n", "\\n" ~ StringUtils.repeat(" ", nameWidth + 2)),
-                defaultValue == null ? "" : defaultValue
+                argument.getDescription() is null ? "" : argument.getDescription().replace("\\n", "\\n" ~ StringUtils.repeat(" ", nameWidth + 2)),
+                defaultValue is null ? "" : defaultValue
         ), options);
     }
 
     override protected void describeInputOption(InputOption option, DescriptorOptions options)
     {
         string defaultValue = "";
-        if (option.getDefaultValue() != null) {
-            defaultValue = String.format("<comment> (default: %s)</comment>", option.getDefaultValue());
+        if (option.getDefaultValue() !is null) {
+            defaultValue = format("<comment> (default: %s)</comment>", option.getDefaultValue());
         }
 
-        int nameWidth = options.has("name_width") ? Integer.valueOf(options.get("name_width")) : option.getName().length();
-        int nameWithShortcutWidth = nameWidth - option.getName().length() - 2;
+        int nameWidth = options.has("name_width") ? Integer.valueOf(options.get("name_width")).intValue() : cast(int)(option.getName().length);
+        int nameWithShortcutWidth = nameWidth - cast(int)(option.getName().length) - 2;
 
-        writeText(string.format(" <info>%s</info> %-" ~ nameWithShortcutWidth ~ "s%s%s%s",
+        writeText(format(" <info>%s</info> %-" ~ nameWithShortcutWidth.to!string ~ "s%s%s%s",
                 "--" ~ option.getName(),
-                option.getShortcut() == null ? "" : String.format("(-%s) ", option.getShortcut()),
+                option.getShortcut() is null ? "" : format("(-%s) ", option.getShortcut()),
                 option.getDescription().replace("\\n", "\\n" ~ StringUtils.repeat(" ", nameWidth + 2)),
                 defaultValue,
                 option.isArray() ? "<comment> (multiple values allowed)</comment>": ""
@@ -54,14 +60,14 @@ class TextDescriptor : AbstractDescriptor
         int nameWidth = 0;
         int nameLength;
         foreach (InputOption option ; definition.getOptions()) {
-            nameLength = option.getName().length() + 2;
-            if (option.getShortcut() != null) {
-                nameLength += option.getShortcut().length() + 3;
+            nameLength = cast(int)(option.getName().length) + 2;
+            if (option.getShortcut() !is null) {
+                nameLength += cast(int)(option.getShortcut().length) + 3;
             }
-            nameWidth = Math.max(nameWidth, nameLength);
+            nameWidth = MathHelper.max(nameWidth, nameLength);
         }
         foreach (InputArgument argument ; definition.getArguments()) {
-            nameWidth = Math.max(nameWidth, argument.getName().length());
+            nameWidth = MathHelper.max(nameWidth, cast(int)(argument.getName().length));
         }
         ++nameWidth;
 
@@ -69,7 +75,7 @@ class TextDescriptor : AbstractDescriptor
             writeText("<comment>Arguments:</comment>", options);
             writeNewline();
             foreach (InputArgument argument ; definition.getArguments()) {
-                describeInputArgument(argument, (new DescriptorOptions()).set("name_width", string.valueOf(nameWidth)));
+                describeInputArgument(argument, (new DescriptorOptions()).set("name_width", nameWidth.to!string));
                 writeNewline();
             }
             if (definition.getOptions().size() > 0) {
@@ -81,7 +87,7 @@ class TextDescriptor : AbstractDescriptor
             writeText("<comment>Options:</comment>", options);
             writeNewline();
             foreach (InputOption option ; definition.getOptions()) {
-                describeInputOption(option, (new DescriptorOptions()).set("name_width", string.valueOf(nameWidth)));
+                describeInputOption(option, (new DescriptorOptions()).set("name_width", nameWidth.to!string));
                 writeNewline();
             }
         }
@@ -99,11 +105,11 @@ class TextDescriptor : AbstractDescriptor
 
         if (command.getAliases().length > 0) {
             writeNewline();
-            writeText("<comment>Aliases:</comment> <info>" ~ StringUtils.join(command.getAliases(), ", ") + "</info>", options);
+            writeText("<comment>Aliases:</comment> <info>" ~ StringUtils.join(command.getAliases(), ", ") ~ "</info>", options);
         }
 
         InputDefinition definition = command.getNativeDefinition();
-        if (definition != null) {
+        if (definition !is null) {
             writeNewline();
             describeInputDefinition(definition, options);
         }
@@ -111,10 +117,10 @@ class TextDescriptor : AbstractDescriptor
         writeNewline();
 
         string help = command.getProcessedHelp();
-        if (help != null && !help.isEmpty()) {
+        if (help !is null && !(help.length == 0)) {
             writeText("<comment>Help:</comment>", options);
             writeNewline();
-            writeText(" " ~ help.replaceAll("\\n", "\\\n "), options);
+            writeText(" " ~ help.replace("\\n", "\\\n "), options);
             writeNewline();
         }
     }
@@ -126,32 +132,32 @@ class TextDescriptor : AbstractDescriptor
 
         int width = getColumnWidth(description.getCommands());
 
-        if (options.has("raw_text") && bool.parsebool(options.get("raw_text"))) {
+        if (options.has("raw_text") && Boolean.parseBoolean(options.get("raw_text"))) {
             foreach (Command command ; description.getCommands().values()) {
-                writeText(string.format("%-" ~ width ~ "s %s", command.getName(), command.getDescription()), options);
+                writeText(format("%-" ~ width.to!string ~ "s %s", command.getName(), command.getDescription()), options);
                 writeNewline();
             }
         } else {
             writeText(application.getHelp(), options);
             writeNewline();
 
-            if (describedNamespace != null) {
-                writeText(string.format("<comment>Available commands for the '%s' namespace:</comment>", describedNamespace), options);
+            if (describedNamespace !is null) {
+                writeText(format("<comment>Available commands for the '%s' namespace:</comment>", describedNamespace), options);
             } else {
                 writeText("<comment>Available commands:</comment>", options);
             }
 
             // add commands by namespace
-            foreach (Map.Entry!(string, List!(string)) entry ; description.getNamespaces().entrySet()) {
+            foreach (string k,List!(string) v ; description.getNamespaces()) {
 
-                if (describedNamespace == null && !ApplicationDescription.GLOBAL_NAMESPACE == entry.getKey()) {
+                if (describedNamespace is null && !(ApplicationDescription.GLOBAL_NAMESPACE == k)) {
                     writeNewline();
-                    writeText("<comment>" ~ entry.getKey() + "</comment>", options);
+                    writeText("<comment>" ~ k ~ "</comment>", options);
                 }
 
-                foreach (string name ; entry.getValue()) {
+                foreach (string name ; v) {
                     writeNewline();
-                    writeText(string.format("  <info>%-" ~ width ~ "s</info> %s", name, description.getCommand(name).getDescription() == null ? "" : description.getCommand(name).getDescription()), options);
+                    writeText(format("  <info>%-" ~ width.to!string ~ "s</info> %s", name, description.getCommand(name).getDescription() is null ? "" : description.getCommand(name).getDescription()), options);
                 }
             }
 
@@ -161,14 +167,14 @@ class TextDescriptor : AbstractDescriptor
 
     private void writeNewline()
     {
-        writeText(System.getProperty("line.separator"), new DescriptorOptions());
+        writeText("\r\n"/* System.getProperty("line.separator") */, new DescriptorOptions());
     }
 
     private void writeText(string content, DescriptorOptions options)
     {
         write(
-            options.has("raw_text") && bool.parsebool("raw_text") ? StringUtils.stripTags(content) : content,
-            !options.has("raw_output") || !bool.parsebool(options.get("raw_output"))
+            options.has("raw_text") && Boolean.parseBoolean("raw_text") ? StringUtils.stripTags(content) : content,
+            !options.has("raw_output") || !Boolean.parseBoolean(options.get("raw_output"))
         );
     }
 
@@ -176,7 +182,7 @@ class TextDescriptor : AbstractDescriptor
     {
         int width = 0;
         foreach (Command command ; commands.values()) {
-            width = Math.max(width, command.getName().length());
+            width = MathHelper.max(width, cast(int)(command.getName().length));
         }
 
         return width;

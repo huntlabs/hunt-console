@@ -7,6 +7,7 @@ import hunt.console.output.Output;
 import hunt.console.output.Verbosity;
 import hunt.console.output.OutputType;
 
+import std.string;
 /**
  * Base class for output classes.
  *
@@ -82,17 +83,17 @@ public abstract class AbstractOutput : Output
 
     public bool isVerbose()
     {
-        return verbosity.ordinal() >= Verbosity.VERBOSE.ordinal();
+        return cast(int)verbosity >= cast(int)(Verbosity.VERBOSE);
     }
 
     public bool isVeryVerbose()
     {
-        return verbosity.ordinal() >= Verbosity.VERY_VERBOSE.ordinal();
+        return cast(int)(verbosity) >= cast(int)(Verbosity.VERY_VERBOSE);
     }
 
     public bool isDebug()
     {
-        return verbosity.ordinal() >= Verbosity.DEBUG.ordinal();
+        return cast(int)(verbosity) >= cast(int)(Verbosity.DEBUG);
     }
 
     override public void write(string message)
@@ -111,7 +112,7 @@ public abstract class AbstractOutput : Output
             return;
         }
 
-        switch (type) {
+        switch (type) with(OutputType){
             case NORMAL:
                 message = formatter.format(message);
                 break;
@@ -121,7 +122,7 @@ public abstract class AbstractOutput : Output
                 // todo strip < > tags
                 break;
             default:
-                throw new InvalidArgumentException(string.format("Unknown output type given (%s)", type));
+                throw new InvalidArgumentException(format("Unknown output type given (%s)", type));
         }
 
         doWrite(message, newline);

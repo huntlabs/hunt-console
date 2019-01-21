@@ -1,10 +1,17 @@
 module hunt.console.input.ArgvInput;
 
+import std.algorithm.searching;
+import std.string;
+import std.conv;
 import hunt.collection.ArrayList;
 // import hunt.collection.Arrays;
 import hunt.collection.List;
 import hunt.console.input.AbstractInput;
 import hunt.console.input.InputDefinition;
+import hunt.text.Common;
+import hunt.Exceptions;
+import hunt.console.input.InputArgument;
+import hunt.console.input.InputOption;
 
 class ArgvInput : AbstractInput
 {
@@ -18,14 +25,14 @@ class ArgvInput : AbstractInput
 
     public this(string[] args, InputDefinition definition)
     {
-        this(new ArrayList!(string)(Arrays.asList(args)), definition);
+        this(new ArrayList!(string)(args), definition);
     }
 
     public this(List!(string) args, InputDefinition definition)
     {
         tokens = args;
 
-        if (definition == null) {
+        if (definition is null) {
             this.definition = new InputDefinition();
         } else {
             bind(definition);
@@ -43,13 +50,13 @@ class ArgvInput : AbstractInput
         bool parseOptions = true;
         parsed = tokens;
         foreach (string token ; parsed) {
-            if (parseOptions && token.equals("")) {
+            if (parseOptions && token == ("")) {
                 parseArgument(token);
-            } else if (parseOptions && token.equals("--")) {
+            } else if (parseOptions && token == ("--")) {
                 parseOptions = false;
             } else if (parseOptions && token.startsWith("--")) {
                 parseLongOption(token);
-            } else if (parseOptions && token[0] == '-' && !token.equals("-")) {
+            } else if (parseOptions && token[0] == '-' && !(token == ("-"))) {
                 parseShortOption(token);
             } else {
                 parseArgument(token);
@@ -61,8 +68,8 @@ class ArgvInput : AbstractInput
     {
         string option = token.substring(1);
 
-        if (option.length() > 1) {
-            string name = String.valueOf(option[0]);
+        if (option.length > 1) {
+            string name = to!string(option[0]);
             if (definition.hasShortcut(name) && definition.getOptionForShortcut(name).acceptValue()) {
                 // an option with a value (with no space)
                 addShortOption(name, option.substring(1));
@@ -76,12 +83,12 @@ class ArgvInput : AbstractInput
 
     private void parseShortOptionSet(string options)
     {
-        int len = options.length();
+        int len = cast(int)(options.length);
         string name;
         for (int i = 0; i < len; i++) {
-            name = String.valueOf(options[i]);
+            name = to!string(options[i]);
             if (!definition.hasShortcut(name)) {
-                throw new RuntimeException(string.format("The '-%s' option does not exist.", name));
+                throw new RuntimeException(format("The '-%s' option does not exist.", name));
             }
 
             InputOption option = definition.getOptionForShortcut(name);
@@ -98,7 +105,7 @@ class ArgvInput : AbstractInput
     {
         string option = token.substring(2);
 
-        int pos = option.indexOf('=');
+        int pos = cast(int)(option.indexOf('='));
         if (pos > -1) {
             addLongOption(option.substring(0, pos), option.substring(pos + 1));
         } else {
@@ -130,7 +137,7 @@ class ArgvInput : AbstractInput
     private void addShortOption(string shortcut, string value)
     {
         if (!definition.hasShortcut(shortcut)) {
-            throw new RuntimeException(string.format("The '-%s' option does not exist.", shortcut));
+            throw new RuntimeException(format("The '-%s' option does not exist.", shortcut));
         }
 
         addLongOption(definition.getOptionForShortcut(shortcut).getName(), value);
@@ -139,20 +146,20 @@ class ArgvInput : AbstractInput
     private void addLongOption(string name, string value)
     {
         if (!definition.hasOption(name)) {
-            throw new RuntimeException(string.format("The '--%s' option does not exist.", name));
+            throw new RuntimeException(format("The '--%s' option does not exist.", name));
         }
 
         InputOption option = definition.getOption(name);
 
-        if (value != null && !option.acceptValue()) {
-            throw new RuntimeException(string.format("The '--%s' option does not accept a value.", name));
+        if (value !is null && !option.acceptValue()) {
+            throw new RuntimeException(format("The '--%s' option does not accept a value.", name));
         }
 
-        if (value == null && option.acceptValue() && parsed.size() > 0) {
+        if (value is null && option.acceptValue() && parsed.size() > 0) {
             // if option accepts an optional or mandatory argument
             // let's see if there is one provided
-            string next = parsed.remove(0);
-            if (!next.isEmpty() && next[0] != '-') {
+            string next = parsed.removeAt(0);
+            if (!next.isEmpty && next[0] != '-') {
                 value = next;
             } else if (next.isEmpty()) {
                 value = "";
@@ -161,9 +168,9 @@ class ArgvInput : AbstractInput
             }
         }
 
-        if (value == null) {
+        if (value is null) {
             if (option.isValueRequired()) {
-                throw new RuntimeException(string.format("The '--%s' option requires a value.", name));
+                throw new RuntimeException(format("The '--%s' option requires a value.", name));
             }
 
             if (!option.isArray()) {
@@ -200,7 +207,7 @@ class ArgvInput : AbstractInput
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
      */
-    /* override */ public bool hasParameterOption(string[] values)
+    /* override */ public bool hasParameterOption(string[] values...)
     {
         foreach (string token ; tokens) {
             foreach (string value ; values) {
@@ -231,14 +238,14 @@ class ArgvInput : AbstractInput
         string token;
 
         for (int i = 0; i < len; i++) {
-            token = tokens.remove(0);
+            token = tokens.removeAt(0);
             if (token == value || token.startsWith(value ~ "=")) {
-                int pos = token.indexOf('=');
+                int pos = cast(int)(token.indexOf('='));
                 if (pos > -1) {
                     return token.substring(pos + 1);
                 }
 
-                return tokens.remove(0);
+                return tokens.removeAt(0);
             }
         }
 
@@ -249,8 +256,8 @@ class ArgvInput : AbstractInput
     {
         // todo implement
 
-        return "ArgvInput{" +
-                "tokens=" ~ tokens +
+        return "ArgvInput{" ~
+                "tokens=" ~ (cast(Object)tokens).toString ~
                 '}';
     }
 }

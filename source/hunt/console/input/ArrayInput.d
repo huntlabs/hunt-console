@@ -1,12 +1,15 @@
 module hunt.console.input.ArrayInput;
 
+import std.string;
+import hunt.console.input.InputOption;
 import hunt.console.error.InvalidArgumentException;
-
+import hunt.Integer;
 import hunt.collection.HashMap;
 import hunt.collection.LinkedHashMap;
 import hunt.collection.Map;
 import hunt.console.input.AbstractInput;
 import hunt.console.input.InputDefinition;
+import hunt.text.Common;
 
 class ArrayInput : AbstractInput
 {
@@ -17,12 +20,12 @@ class ArrayInput : AbstractInput
         this(new HashMap!(string, string)());
     }
 
-    public this(string[] nameValues)
+    public this(string[] nameValues...)
     {
         parameters = new LinkedHashMap!(string, string)();
         string name = null, value;
         foreach (string nameOrValue ; nameValues) {
-            if (name == null) {
+            if (name is null) {
                 name = nameOrValue;
             } else {
                 value = nameOrValue;
@@ -47,12 +50,12 @@ class ArrayInput : AbstractInput
     override protected void parse()
     {
         string key, value;
-        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
-            key = parameter.getKey();
-            value = parameter.getValue();
+        foreach (string k,string v ; parameters) {
+            key = k;
+            value =v;
             if (key.startsWith("--")) {
                 addLongOption(key.substring(2), value);
-            } else if (parameter.getKey().startsWith("-")) {
+            } else if (k.startsWith("-")) {
                 addShortOption(key.substring(1), value);
             } else {
                 addArgument(key, value);
@@ -63,7 +66,7 @@ class ArrayInput : AbstractInput
     private void addShortOption(string shortcut, string value)
     {
         if (!definition.hasShortcut(shortcut)) {
-            throw new InvalidArgumentException(string.format("The '-%s' option does not exist.", shortcut));
+            throw new InvalidArgumentException(format("The '-%s' option does not exist.", shortcut));
         }
 
         addLongOption(definition.getOptionForShortcut(shortcut).getName(), value);
@@ -72,14 +75,14 @@ class ArrayInput : AbstractInput
     private void addLongOption(string name, string value)
     {
         if (!definition.hasOption(name)) {
-            throw new InvalidArgumentException(string.format("The '--%s' option does not exist.", name));
+            throw new InvalidArgumentException(format("The '--%s' option does not exist.", name));
         }
 
         InputOption option = definition.getOption(name);
 
-        if (value == null) {
+        if (value is null) {
             if (option.isValueRequired()) {
-                throw new InvalidArgumentException(string.format("The '--%s' option requires a value.", name));
+                throw new InvalidArgumentException(format("The '--%s' option requires a value.", name));
             }
 
             value = option.isValueOptional() ? option.getDefaultValue() : "true";
@@ -91,7 +94,7 @@ class ArrayInput : AbstractInput
     private void addArgument(string name, string value)
     {
         if (!definition.hasArgument(name)) {
-            throw new InvalidArgumentException(string.format("The '%s' argument does not exist.", name));
+            throw new InvalidArgumentException(format("The '%s' argument does not exist.", name));
         }
 
         arguments.put(name, value);
@@ -99,21 +102,21 @@ class ArrayInput : AbstractInput
 
     /* override */ public string getFirstArgument()
     {
-        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
-            if (parameter.getKey().startsWith("-")) {
+        foreach (string k ,string v ; parameters) {
+            if (k.startsWith("-")) {
                 continue;
             }
-            return parameter.getValue();
+            return v;
         }
 
         return null;
     }
 
-    /* override */ public bool hasParameterOption(string[] values)
+    /* override */ public bool hasParameterOption(string[] values...)
     {
-        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
+        foreach (string k ,string v ; parameters) {
             foreach (string value ; values) {
-                if (parameter.getKey() == value) {
+                if (k == value) {
                     return true;
                 }
             }
@@ -129,9 +132,9 @@ class ArrayInput : AbstractInput
 
     /* override */ public string getParameterOption(string value, string defaultValue)
     {
-        foreach (Map.Entry!(string, string) parameter ; parameters.entrySet()) {
-            if (parameter.getKey() == value) {
-                return parameter.getValue();
+        foreach (string k , string v ; parameters) {
+            if (k == value) {
+                return v;
             }
         }
 

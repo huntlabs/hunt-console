@@ -3,7 +3,7 @@ module hunt.console.output.Output;
 import hunt.console.output.OutputType;
 
 import hunt.console.output.Verbosity;
-import hunt.console.output.OutputFormatter;
+import hunt.console.formatter.OutputFormatter;
 
 public interface Output
 {

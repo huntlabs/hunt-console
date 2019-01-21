@@ -1,13 +1,17 @@
 module hunt.console.descriptor.ApplicationDescription;
 
+import std.string;
+
 import hunt.console.Application;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
+import hunt.console.descriptor.ApplicationDescription;
 
 import hunt.collection.ArrayList;
 import hunt.collection.HashMap;
 import hunt.collection.List;
 import hunt.collection.Map;
+import hunt.Integer;
 
 class ApplicationDescription
 {
@@ -36,7 +40,7 @@ class ApplicationDescription
 
     public Map!(string, List!(string)) getNamespaces()
     {
-        if (namespaces == null) {
+        if (namespaces is null) {
             inspectApplication();
         }
 
@@ -45,7 +49,7 @@ class ApplicationDescription
 
     public Map!(string, Command) getCommands()
     {
-        if (commands == null) {
+        if (commands is null) {
             inspectApplication();
         }
 
@@ -55,7 +59,7 @@ class ApplicationDescription
     public Command getCommand(string name)
     {
         if (!commands.containsKey(name) && !aliases.containsKey(name)) {
-            throw new InvalidArgumentException(string.format("Command %s does not exist.", name));
+            throw new InvalidArgumentException(format("Command %s does not exist.", name));
         }
 
         if (commands.containsKey(name)) {
@@ -72,21 +76,21 @@ class ApplicationDescription
         namespaces = new HashMap!(string, List!(string))();
 
         Map!(string, Command) all;
-        if (namespace == null) {
+        if (namespace is null) {
             all = application.all();
         } else {
             all = application.all(namespace);
         }
 
-        foreach (Map.Entry!(string, Map!(string, Command)) entry ; sortCommands(all).entrySet()) {
+        foreach (string k ,Map!(string, Command) v ; sortCommands(all)) {
 
-            string namespace = entry.getKey();
+            string namespace = k;
             List!(string) names = new ArrayList!(string)();
 
-            foreach (Map.Entry!(string, Command) commandEntry ; entry.getValue().entrySet()) {
-                string name = commandEntry.getKey();
-                Command command = commandEntry.getValue();
-                if (command.getName() == null || command.getName().isEmpty()) {
+            foreach (string subK , Command subV ; v) {
+                string name = subK;
+                Command command = subV;
+                if (command.getName() is null || command.getName().length == 0) {
                     continue;
                 }
 
@@ -108,16 +112,16 @@ class ApplicationDescription
         Map!(string, Map!(string, Command)) namespacedCommands = new HashMap!(string, Map!(string, Command))();
 
         string key;
-        foreach (Map.Entry!(string, Command) entry ; commands.entrySet()) {
-            key = application.extractNamespace(entry.getKey(), 1);
-            if (key == null || key.isEmpty()) {
+        foreach (string k ,Command v ; commands) {
+            key = application.extractNamespace(k, new Integer(1));
+            if (key is null || key.length == 0) {
                 key = GLOBAL_NAMESPACE;
             }
 
             if (!namespacedCommands.containsKey(key)) {
                 namespacedCommands.put(key, new HashMap!(string, Command)());
             }
-            namespacedCommands.get(key).put(entry.getKey(), entry.getValue());
+            namespacedCommands.get(key).put(k, v);
         }
 
         // todo sort

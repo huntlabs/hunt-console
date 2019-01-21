@@ -3,6 +3,10 @@ module hunt.console.input.InputOption;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
 import hunt.console.util.StringUtils;
+import hunt.text.Common;
+import std.string;
+import hunt.Exceptions;
+import std.conv;
 
 class InputOption
 {
@@ -47,11 +51,11 @@ class InputOption
             throw new InvalidArgumentException("An option name cannot be empty.");
         }
 
-        if (shortcut != null && shortcut.isEmpty()) {
+        if (shortcut !is null && shortcut.isEmpty()) {
             shortcut = null;
         }
 
-        if (shortcut != null) {
+        if (shortcut !is null) {
             shortcut = StringUtils.ltrim(shortcut, '-');
             if (shortcut.isEmpty()) {
                 throw new IllegalArgumentException("An option shortcut cannot be empty.");
@@ -59,7 +63,7 @@ class InputOption
         }
 
         if (mode > 15 || mode < 1) {
-            throw new InvalidArgumentException("Option mode " ~ mode ~ " is not valid");
+            throw new InvalidArgumentException("Option mode " ~ mode.to!string ~ " is not valid");
         }
 
         this.name = name;
@@ -102,7 +106,7 @@ class InputOption
 
     public void setDefaultValue(string defaultValue)
     {
-        if ((mode & VALUE_NONE) == VALUE_NONE && defaultValue != null) {
+        if ((mode & VALUE_NONE) == VALUE_NONE && defaultValue !is null) {
             throw new LogicException("Cannot set a default value when using InputOption.VALUE_NONE mode.");
         }
 
@@ -133,20 +137,20 @@ class InputOption
         if (isArray() != that.isArray()) return false;
         if (isValueRequired() != that.isValueRequired()) return false;
         if (isValueOptional() != that.isValueOptional()) return false;
-        if (defaultValue != null ? !defaultValue == that.defaultValue : that.defaultValue != null) return false;
-        if (name != null ? !name == that.name : that.name != null) return false;
-        if (shortcut != null ? !shortcut == that.shortcut : that.shortcut != null) return false;
+        if (defaultValue !is null ? !(defaultValue == that.defaultValue) : that.defaultValue !is null) return false;
+        if (name !is null ? !(name == that.name) : that.name !is null) return false;
+        if (shortcut !is null ? !(shortcut == that.shortcut) : that.shortcut !is null) return false;
 
         return true;
     }
 
     override public size_t toHash() @trusted nothrow
     {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (shortcut != null ? shortcut.hashCode() : 0);
-        result = 31 * result ~ mode;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        int result = name !is null ? cast(int)(name.hashOf()) : 0;
+        result = 31 * result + (shortcut !is null ? cast(int)(shortcut.hashOf()) : 0);
+        result = 31 * result + mode;
+        result = 31 * result + (description !is null ? cast(int)(description.hashOf()) : 0);
+        result = 31 * result + (defaultValue !is null ? cast(int)(defaultValue.hashOf()) : 0);
         return result;
     }
 }

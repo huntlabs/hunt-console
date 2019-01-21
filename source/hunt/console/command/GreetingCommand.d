@@ -1,5 +1,7 @@
 module hunt.console.command.GreetingCommand;
 
+import std.string;
+
 import hunt.console.helper.QuestionHelper;
 import hunt.console.input.Input;
 import hunt.console.input.InputArgument;
@@ -21,18 +23,18 @@ class GreetingCommand : Command
     override protected int execute(Input input, Output output)
     {
         string name = input.getArgument("name");
-        if (name == null) {
+        if (name is null) {
             name = "stranger";
         }
 
-        output.writeln(string.format("Greetings, %s!", name));
+        output.writeln(format("Greetings, %s!", name));
 
         return 0;
     }
 
     override protected void interact(Input input, Output output)
     {
-        if (input.getArgument("name") == null) {
+        if (input.getArgument("name") is null) {
             string name = (cast(QuestionHelper) (getHelper("question")))
                     .ask(input, output, new Question("What is your name?"));
             input.setArgument("name", name);

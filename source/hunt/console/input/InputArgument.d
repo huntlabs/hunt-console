@@ -2,6 +2,7 @@ module hunt.console.input.InputArgument;
 
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
+import std.conv;
 
 class InputArgument
 {
@@ -32,7 +33,7 @@ class InputArgument
     public this(string name, int mode, string description, string defaultValue)
     {
         if (mode > 7 || mode < 1) {
-            throw new InvalidArgumentException("Argument mode " + mode + " is not valid.");
+            throw new InvalidArgumentException("Argument mode " ~ mode.to!string ~ " is not valid.");
         }
 
         this.name = name;
@@ -59,7 +60,7 @@ class InputArgument
 
     public void setDefaultValue(string defaultValue)
     {
-        if (mode == REQUIRED && defaultValue != null) {
+        if (mode == REQUIRED && defaultValue !is null) {
             throw new LogicException("Cannot set a default value except for InputArgument.OPTIONAL mode.");
         }
 

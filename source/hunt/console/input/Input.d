@@ -8,7 +8,7 @@ public interface Input
 {
     public string getFirstArgument();
 
-    public bool hasParameterOption(string[] values);
+    public bool hasParameterOption(string[] values...);
 
     public string getParameterOption(string value);
 

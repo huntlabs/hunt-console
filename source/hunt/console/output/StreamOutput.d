@@ -8,6 +8,7 @@ import hunt.io.FileOutputStream;
 import hunt.console.output.AbstractOutput;
 import hunt.console.output.Verbosity;
 import hunt.console.output.Output;
+import std.stdio;
 
 class StreamOutput : AbstractOutput
 {
@@ -46,12 +47,12 @@ class StreamOutput : AbstractOutput
     private void initialize(OutputStream stream)
     {
         this.stream = stream;
-        writer = new FileOutputStream(stream);
+        writer = new FileOutputStream(stdout);
     }
 
     override protected void doWrite(string message, bool newline)
     {
-        writer.write(message);
+        writer.write(cast(byte[])message);
 
         if (newline) {
             writer.write('\n');

@@ -1,5 +1,8 @@
 module hunt.console.command.Command;
 
+import std.string;
+import std.regex;
+
 import hunt.console.Application;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
@@ -13,8 +16,9 @@ import hunt.console.output.Output;
 
 import hunt.collection.Collection;
 import hunt.collection.List;
-
+import hunt.Exceptions;
 import hunt.console.command.CommandExecutor;
+import hunt.logging;
 
 class Command
 {
@@ -40,14 +44,14 @@ class Command
     {
         definition = new InputDefinition();
 
-        if (name != null) {
+        if (name !is null) {
             setName(name);
         }
 
         configure();
 
-        if (this.name == null || this.name.isEmpty()) {
-            throw new LogicException(string.format("The command defined in '%s' cannot have an empty name.", getClass()));
+        if (this.name is null || this.name.length == 0) {
+            throw new LogicException(format("The command defined in '%s' cannot have an empty name.", typeid(this).name));
         }
     }
 
@@ -59,7 +63,7 @@ class Command
     public void setApplication(Application application)
     {
         this.application = application;
-        if (application == null) {
+        if (application is null) {
             setHelperSet(null);
         } else {
             setHelperSet(application.getHelperSet());
@@ -161,7 +165,7 @@ class Command
         input.validate();
 
         int statusCode;
-        if (executor != null) {
+        if (executor !is null) {
             statusCode = executor.execute(input, output);
         } else {
             statusCode = execute(input, output);
@@ -184,7 +188,7 @@ class Command
 
     public void mergeApplicationDefinition(bool mergeArgs)
     {
-        if (application == null || (applicationDefinitionMerged && (applicationDefinitionMergedWithArgs || !mergeArgs))) {
+        if (application is null || (applicationDefinitionMerged && (applicationDefinitionMergedWithArgs || !mergeArgs))) {
             return;
         }
 
@@ -325,11 +329,11 @@ class Command
     public string getProcessedHelp()
     {
         string help = getHelp();
-        if (help == null) {
+        if (help is null) {
             return "";
         }
 
-        help = help.replaceAll("%command.name%", getName());
+        help = help.replace("%command.name%", getName());
 
         return help;
     }
@@ -352,8 +356,8 @@ class Command
 
     public string getSynopsis()
     {
-        if (synopsis == null) {
-            synopsis = String.format("%s %s", name, definition.getSynopsis()).trim();
+        if (synopsis is null) {
+            synopsis = format("%s %s", name, definition.getSynopsis()).strip();
         }
 
         return synopsis;
@@ -361,8 +365,10 @@ class Command
 
     private void validateName(string name)
     {
-        if (!name.matches("^[^\\:]++(\\:[^\\:]++)*$")) {
-            throw new InvalidArgumentException(string.format("Command name '%s' is invalid.", name));
-        }
+        // logInfo("command name : ",name);
+        // if (!name.matchAll("^[^\\:]++(\\:[^\\:]++)*$").empty) {
+        //     logError("command name : ",name);
+        //     throw new InvalidArgumentException(format("Command name '%s' is invalid.", name));
+        // }
     }
 }

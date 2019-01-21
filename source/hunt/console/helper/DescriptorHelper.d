@@ -1,5 +1,7 @@
 module hunt.console.helper.DescriptorHelper;
 
+import std.string;
+
 import hunt.console.descriptor.MarkdownDescriptor;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.descriptor.Descriptor;
@@ -10,6 +12,7 @@ import hunt.console.output.Output;
 import hunt.collection.HashMap;
 import hunt.collection.Map;
 import hunt.console.helper.AbstractHelper;
+import hunt.Boolean;
 
 class DescriptorHelper : AbstractHelper
 {
@@ -24,11 +27,11 @@ class DescriptorHelper : AbstractHelper
 
     public void describe(Output output, Object object, DescriptorOptions options)
     {
-        options.set("raw_text", bool.FALSE.toString(), false);
+        options.set("raw_text", Boolean.FALSE.toString(), false);
         options.set("format", "txt", false);
 
         if (!descriptors.containsKey(options.get("format"))) {
-            throw new InvalidArgumentException(string.format("Unsupported format '%s'.", options.get("format")));
+            throw new InvalidArgumentException(format("Unsupported format '%s'.", options.get("format")));
         }
 
         Descriptor descriptor = descriptors.get(options.get("format"));

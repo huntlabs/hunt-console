@@ -1,11 +1,17 @@
 module hunt.console.util.StringUtils;
 
+import hunt.text.StringBuilder;
+import std.string;
+import std.conv;
+import hunt.text.Common;
+
 alias Character = char;
 class StringUtils
 {
-    public static string repeat(string s, int n)
+    public static string repeat(T)(string s, T n) 
+        if(is(T == int) || is(T == ulong) || is(T == uint) || is(T == long))
     {
-        if (s == null) {
+        if (s is null) {
             return null;
         }
         StringBuilder sb = new StringBuilder();
@@ -17,12 +23,12 @@ class StringUtils
 
     public static string stripTags(string s)
     {
-        return s.replaceAll("\\<.*?\\>", "");
+        return s.replace("\\<.*?\\>", "");
     }
 
     public static int count(string word, Character ch)
     {
-        int pos = word.indexOf(ch);
+        int pos = cast(int)(word.indexOf(ch));
 
         return pos == -1 ? 0 : 1 + count(word.substring(pos+1),ch);
     }
@@ -48,7 +54,7 @@ class StringUtils
     public static string ltrim(string s, char c)
     {
         int i = 0;
-        while (i < s.length() && s[i] == c) {
+        while (i < s.length && s[i] == c) {
             i++;
         }
         return s.substring(i);
@@ -61,7 +67,7 @@ class StringUtils
 
     public static string rtrim(string s, char c)
     {
-        int i = s.length()-1;
+        int i = cast(int)(s.length-1);
         while (i >= 0 && s[i] == c) {
             i--;
         }
@@ -70,28 +76,28 @@ class StringUtils
 
     public static string padRight(string string, int length, char padChar)
     {
-        return padRight(string, length, string.valueOf(padChar));
+        return padRight(string, length, (padChar));
     }
 
-    public static string padRight(string string, int length, string padString)
+    public static string padRight(string str, int length, string padString)
     {
         if (length < 1) {
-            return string;
+            return str;
         }
-        return String.format("%-" ~ length ~ "s", string).replace(" ", padString);
+        return format("%-" ~ length.to!string ~ "s", str).replace(" ", padString);
     }
 
     public static string padLeft(string string, int length, char padChar)
     {
-        return padLeft(string, length, string.valueOf(padChar));
+        return padLeft(string, length, (padChar));
     }
 
-    public static string padLeft(string string, int length, string padString)
+    public static string padLeft(string str, int length, string padString)
     {
         if (length < 1) {
-            return string;
+            return str;
         }
-        return String.format("%" ~ length ~ "s", string).replace(" ", padString);
+        return format("%" ~ length.to!string ~ "s", str).replace(" ", padString);
     }
 
     /**
@@ -100,11 +106,11 @@ class StringUtils
      */
     public static string[] split(string s, char c)
     {
-        if (string.valueOf(c) == s) {
+        if (to!string(c) == s) {
             return ["",""];
         }
 
-        return s.split(string.valueOf(c));
+        return s.split(to!string(c));
     }
 
     /**
@@ -119,11 +125,11 @@ class StringUtils
      */
     public static string unquote(string s)
     {
-        if (s != null
+        if (s !is null
                 && ((s.startsWith("\"") && s.endsWith("\""))
                 || (s.startsWith("'") && s.endsWith("'")))) {
 
-            s = s.substring(1, s.length() - 1);
+            s = s.substring(1, s.length - 1);
         }
 
         return s;

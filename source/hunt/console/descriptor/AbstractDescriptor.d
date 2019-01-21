@@ -1,5 +1,7 @@
 module hunt.console.descriptor.AbstractDescriptor;
 
+import std.string;
+
 import hunt.console.Application;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
@@ -35,7 +37,7 @@ public abstract class AbstractDescriptor : Descriptor
         } else if (cast(Application)object !is null) {
             describeApplication(cast(Application) object, options);
         } else {
-            throw new InvalidArgumentException(string.format("Object of type '%s' is not describable.", object.getClass()));
+            throw new InvalidArgumentException(format("Object of type '%s' is not describable.", typeid(object).name));
         }
     }
 

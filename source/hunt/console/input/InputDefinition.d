@@ -10,6 +10,10 @@ import hunt.console.input.InputArgument;
 import hunt.console.input.InputOption;
 import hunt.collection.Collection;
 import hunt.collection.List;
+import hunt.collection.ArrayList;
+import hunt.text.StringBuilder;
+import hunt.Integer;
+import std.string;
 
 class InputDefinition
 {
@@ -67,7 +71,7 @@ class InputDefinition
     public void addArgument(InputArgument argument)
     {
         if (arguments.containsKey(argument.getName())) {
-            throw new LogicException(string.format("An argument with name '%s' already exists.", argument.getName()));
+            throw new LogicException(format("An argument with name '%s' already exists.", argument.getName()));
         }
 
         if (hasAnArrayArgument) {
@@ -94,7 +98,7 @@ class InputDefinition
     public InputArgument getArgument(string name)
     {
         if (!hasArgument(name)) {
-            throw new InvalidArgumentException(string.format("The '%s' argument does not exist.", name));
+            throw new InvalidArgumentException(format("The '%s' argument does not exist.", name));
         }
 
         return arguments.get(name);
@@ -102,7 +106,7 @@ class InputDefinition
 
     public InputArgument getArgument(int pos)
     {
-        return cast(InputArgument) arguments.values().toArray()[pos];
+        return cast(InputArgument) (arguments.values()[pos]);
     }
 
     public bool hasArgument(string name)
@@ -115,9 +119,9 @@ class InputDefinition
         return arguments.size() > pos;
     }
 
-    public Collection!(InputArgument) getArguments()
+    public Collection!InputArgument getArguments()
     {
-        return arguments.values();
+        return new ArrayList!InputArgument(arguments.values());
     }
 
     public int getArgumentCount()
@@ -166,21 +170,21 @@ class InputDefinition
 
     public void addOption(InputOption option)
     {
-        if (options.containsKey(option.getName()) && !option == options.get(option.getName())) {
-            throw new LogicException(string.format("An option named '%s' already exists.", option.getName()));
+        if (options.containsKey(option.getName()) && !(option == options.get(option.getName()))) {
+            throw new LogicException(format("An option named '%s' already exists.", option.getName()));
         }
 
-        if (option.getShortcut() != null) {
+        if (option.getShortcut() !is null) {
             foreach (string shortcut ; option.getShortcut().split("\\|")) {
-                if (shortcuts.containsKey(shortcut) && !option == options.get(shortcuts.get(shortcut))) {
-                    throw new LogicException(string.format("An option with shortcut '%s' already exists.", shortcut));
+                if (shortcuts.containsKey(shortcut) && !(option == options.get(shortcuts.get(shortcut)))) {
+                    throw new LogicException(format("An option with shortcut '%s' already exists.", shortcut));
                 }
             }
         }
 
         options.put(option.getName(), option);
 
-        if (option.getShortcut() != null) {
+        if (option.getShortcut() !is null) {
             foreach (string shortcut ; option.getShortcut().split("|")) {
                 shortcuts.put(shortcut, option.getName());
             }
@@ -190,7 +194,7 @@ class InputDefinition
     public InputOption getOption(string name)
     {
         if (!hasOption(name)) {
-            throw new InvalidArgumentException(string.format("The '--%s' option does not exist.", name));
+            throw new InvalidArgumentException(format("The '--%s' option does not exist.", name));
         }
 
         return options.get(name);
@@ -203,7 +207,7 @@ class InputDefinition
 
     public Collection!(InputOption) getOptions()
     {
-        return options.values();
+        return new ArrayList!(InputOption)(options.values());
     }
 
     public bool hasShortcut(string name)
@@ -229,7 +233,7 @@ class InputDefinition
     private string shortcutToName(string shortcut)
     {
         if (!shortcuts.containsKey(shortcut)) {
-            throw new InvalidArgumentException(string.format("The '-%s' option does not exist.", shortcut));
+            throw new InvalidArgumentException(format("The '-%s' option does not exist.", shortcut));
         }
 
         return shortcuts.get(shortcut);
@@ -241,18 +245,18 @@ class InputDefinition
 
         string shortcut;
         foreach (InputOption option ; options.values()) {
-            shortcut = option.getShortcut() == null ? "" : (string.format("-%s|", option.getShortcut()));
-            synopsis.append(string.format("[" + (option.isValueRequired() ? "%s--%s='...'" : (option.isValueOptional() ? "%s--%s[='...']" : "%s--%s")) + "] ", shortcut, option.getName()));
+            shortcut = option.getShortcut() is null ? "" : (format("-%s|", option.getShortcut()));
+            synopsis.append(format("[" ~ (option.isValueRequired() ? "%s--%s='...'" : (option.isValueOptional() ? "%s--%s[='...']" : "%s--%s")) ~ "] ", shortcut, option.getName()));
         }
 
         foreach (InputArgument argument ; arguments.values()) {
-            synopsis.append(string.format(argument.isRequired() ? "%s " : "[%s] ", argument.getName() + (argument.isArray() ? "1" : "")));
+            synopsis.append(format(argument.isRequired() ? "%s " : "[%s] ", argument.getName() ~ (argument.isArray() ? "1" : "")));
             if (argument.isArray()) {
-                synopsis.append(string.format("... [%sN]", argument.getName()));
+                synopsis.append(format("... [%sN]", argument.getName()));
             }
         }
 
-        return synopsis.toString().trim();
+        return synopsis.toString().strip();
     }
 
     public string asText()

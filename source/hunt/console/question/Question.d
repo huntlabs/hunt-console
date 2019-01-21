@@ -57,7 +57,7 @@ class Question
 
     public Question setMaxAttempts(int attempts)
     {
-        if (attempts != null && attempts < 1) {
+        if (attempts != int.init && attempts < 1) {
             throw new InvalidArgumentException("Maximum number of attempts must be a positive value.");
         }
 

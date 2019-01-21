@@ -6,6 +6,9 @@ import hunt.collection.HashMap;
 import hunt.collection.Map;
 import hunt.console.input.Input;
 import hunt.console.input.InputDefinition;
+import hunt.Exceptions;
+
+import std.string;
 
 public abstract class AbstractInput : Input
 {
@@ -57,17 +60,17 @@ public abstract class AbstractInput : Input
     {
         Map!(string, string) argumentValues = definition.getArgumentDefaults();
 
-        foreach (Map.Entry!(string, string) argument ; arguments.entrySet()) {
-            argumentValues.put(argument.getKey(), argument.getValue());
+        foreach (string k,string v ; arguments) {
+            argumentValues.put(k, v);
         }
 
-        return cast(string[]) argumentValues.values().toArray();
+        return argumentValues.values();
     }
 
     override public string getArgument(string name)
     {
         if (!definition.hasArgument(name)) {
-            throw new InvalidArgumentException(string.format("The '%s' argument does not exist.", name));
+            throw new InvalidArgumentException(format("The '%s' argument does not exist.", name));
         }
 
         if (arguments.containsKey(name)) {
@@ -80,7 +83,7 @@ public abstract class AbstractInput : Input
     override public void setArgument(string name, string value) /* throws InvalidArgumentException */
     {
         if (!definition.hasArgument(name)) {
-            throw new InvalidArgumentException(string.format("The '%s' argument does not exist.", name));
+            throw new InvalidArgumentException(format("The '%s' argument does not exist.", name));
         }
 
         arguments.put(name, value);
@@ -95,17 +98,17 @@ public abstract class AbstractInput : Input
     {
         Map!(string, string) optionValues = definition.getOptionDefaults();
 
-        foreach (Map.Entry!(string, string) option ; options.entrySet()) {
-            optionValues.put(option.getKey(), option.getValue());
+        foreach (string k ,string v ; options) {
+            optionValues.put(k, v);
         }
 
-        return cast(string[]) optionValues.values().toArray();
+        return optionValues.values();
     }
 
     override public string getOption(string name)
     {
         if (!definition.hasOption(name)) {
-            throw new InvalidArgumentException(string.format("The '%s' option does not exist.", name));
+            throw new InvalidArgumentException(format("The '%s' option does not exist.", name));
         }
 
         if (options.containsKey(name)) {
@@ -118,7 +121,7 @@ public abstract class AbstractInput : Input
     override public void setOption(string name, string value) /* throws InvalidArgumentException */
     {
         if (!definition.hasOption(name)) {
-            throw new InvalidArgumentException(string.format("The '%s' option does not exist.", name));
+            throw new InvalidArgumentException(format("The '%s' option does not exist.", name));
         }
 
         options.put(name, value);

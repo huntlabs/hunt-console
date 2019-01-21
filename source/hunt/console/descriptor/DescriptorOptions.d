@@ -6,18 +6,18 @@ import hunt.util.Common;
 
 class DescriptorOptions : Cloneable
 {
-    private Map!(string, string) options;
+    private Map!(string, string) _options;
 
 
     public this()
     {
-        options = new HashMap!(string, string)();
+        _options = new HashMap!(string, string)();
     }
 
     private this(DescriptorOptions options)
     {
-        options = new HashMap!(string, string)();
-        this.options.putAll(options.options);
+        _options = new HashMap!(string, string)();
+        this._options.putAll(options._options);
     }
 
     public DescriptorOptions set(string name, string value)
@@ -27,8 +27,8 @@ class DescriptorOptions : Cloneable
 
     public DescriptorOptions set(string name, string value, bool overwrite)
     {
-        if (overwrite || !options.containsKey(name)) {
-            options.put(name, value);
+        if (overwrite || !_options.containsKey(name)) {
+            _options.put(name, value);
         }
 
         return this;
@@ -36,11 +36,11 @@ class DescriptorOptions : Cloneable
 
     public string get(string name)
     {
-        return options.get(name);
+        return _options.get(name);
     }
 
     public bool has(string name)
     {
-        return options.containsKey(name);
+        return _options.containsKey(name);
     }
 }

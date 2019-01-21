@@ -13,6 +13,17 @@ import hunt.console.util.ThrowableUtils;
 
 import hunt.io.Common;
 import hunt.collection.Map;
+import hunt.collection.HashMap;
+import hunt.collection.List;
+import hunt.collection.ArrayList;
+import hunt.collection.Set;
+import hunt.collection.HashSet;
+import hunt.Exceptions;
+import core.stdc.stdlib;
+import std.string;
+import hunt.text.StringBuilder;
+import hunt.Integer;
+
 // import hunt.io.BufferedReader;
 // import hunt.io.InputStreamReader;
 
@@ -32,11 +43,6 @@ class Application
     private int[] _terminalDimensions;
     private HelperSet _helperSet;
 
-    shared this()
-    {
-        commands = new HashMap!(string, Command)();
-    }
-
     this()
     {
         this("UNKNOWN", "UNKNOWN");
@@ -44,6 +50,7 @@ class Application
 
     this(string name, string ver)
     {
+        _commands = new HashMap!(string, Command)();
         _name = name;
         _version = ver;
         _defaultCommand = "list";
@@ -69,7 +76,7 @@ class Application
         try {
             exitCode = doRun(input, output);
         } catch (Exception e) {
-            if (!catchExceptions) {
+            if (!_catchExceptions) {
                 throw new RuntimeException(e);
             }
 
@@ -82,12 +89,12 @@ class Application
             exitCode = 1;
         }
 
-        if (autoExit) {
+        if (_autoExit) {
             if (exitCode > 255) {
                 exitCode = 255;
             }
 
-            System.exit(exitCode);
+            /* System. */exit(exitCode);
         }
 
         return exitCode;
@@ -95,11 +102,11 @@ class Application
 
     private void renderException(Throwable error, Output output)
     {
-        string title = String.format("%s  [%s]  ", error.getMessage(), error.getClass());
+        string title = format("%s  [%s]  ", error.message(), typeid(error).name);
         output.writeln(title);
         output.writeln("");
 
-        if (output.getVerbosity().ordinal() >= Verbosity.VERBOSE.ordinal()) {
+        if (cast(int)(output.getVerbosity()) >= cast(int)(Verbosity.VERBOSE)) {
             output.writeln("<comment>Exception trace:</comment>");
             output.writeln(ThrowableUtils.getThrowableAsString(error));
         }
@@ -115,24 +122,24 @@ class Application
 
         string name = getCommandName(input);
         if (input.hasParameterOption("--help", "-h")) {
-            if (name == null) {
+            if (name is null) {
                 name = "help";
                 input = new ArrayInput("command", "help");
             } else {
-                wantHelps = true;
+                _wantHelps = true;
             }
         }
 
-        if (name == null) {
-            name = defaultCommand;
-            input = new ArrayInput("command", defaultCommand);
+        if (name is null) {
+            name = _defaultCommand;
+            input = new ArrayInput("command", _defaultCommand);
         }
 
         Command command = find(name);
 
-        runningCommand = command;
+        _runningCommand = command;
         int exitCode = doRunCommand(command, input, output);
-        runningCommand = null;
+        _runningCommand = null;
 
         return exitCode;
     }
@@ -167,11 +174,11 @@ class Application
         if (input.hasParameterOption("--quiet", "-q")) {
             output.setVerbosity(Verbosity.QUIET);
         } else {
-            if (input.hasParameterOption("-vvv") || input.hasParameterOption("--verbose=3") || input.getParameterOption("--verbose", "").equals("3")) {
+            if (input.hasParameterOption("-vvv") || input.hasParameterOption("--verbose=3") || input.getParameterOption("--verbose", "")==("3")) {
                 output.setVerbosity(Verbosity.DEBUG);
-            } else if (input.hasParameterOption("-vv") || input.hasParameterOption("--verbose=2") || input.getParameterOption("--verbose", "").equals("2")) {
+            } else if (input.hasParameterOption("-vv") || input.hasParameterOption("--verbose=2") || input.getParameterOption("--verbose", "")==("2")) {
                 output.setVerbosity(Verbosity.VERY_VERBOSE);
-            } else if (input.hasParameterOption("-v") || input.hasParameterOption("--verbose=1") || input.getParameterOption("--verbose", "").equals("1")) {
+            } else if (input.hasParameterOption("-v") || input.hasParameterOption("--verbose=1") || input.getParameterOption("--verbose", "")==("1")) {
                 output.setVerbosity(Verbosity.VERBOSE);
             }
         }
@@ -219,7 +226,7 @@ class Application
 
     public string getHelp()
     {
-        string nl = System.getProperty("line.separator");
+        string nl = "\r\n"/* System.getProperty("line.separator") */;
 
         StringBuilder sb = new StringBuilder();
         sb
@@ -235,10 +242,10 @@ class Application
             .append(nl)
         ;
 
-        foreach (InputOption option ; definition.getOptions()) {
-            sb.append(string.format("  %-29s %s %s",
-                    "<info>--" ~ option.getName() + "</info>",
-                    option.getShortcut() == null ? "  " : "<info>-" ~ option.getShortcut() + "</info>",
+        foreach (InputOption option ; _definition.getOptions()) {
+            sb.append(format("  %-29s %s %s",
+                    "<info>--" ~ option.getName() ~ "</info>",
+                    option.getShortcut() is null ? "  " : "<info>-" ~ option.getShortcut() ~ "</info>",
                     option.getDescription())
             ).append(nl);
         }
@@ -248,8 +255,8 @@ class Application
 
     public string getLongVersion()
     {
-        if (!getName().equals("UNKNOWN") && !getVersion().equals("UNKNOWN")) {
-            return String.format("<info>%s</info> version <comment>%s</comment>", getName(), getVersion());
+        if (!(getName() == ("UNKNOWN")) && !(getVersion() == ("UNKNOWN"))) {
+            return format("<info>%s</info> version <comment>%s</comment>", getName(), getVersion());
         }
 
         return "<info>Console Tool</info>";
@@ -281,14 +288,14 @@ class Application
             return null;
         }
 
-        if (command.getDefinition() == null) {
-            throw new LogicException(string.format("Command class '%s' is not correctly initialized. You probably forgot to call the super constructor.", command.getClass()));
+        if (command.getDefinition() is null) {
+            throw new LogicException(format("Command class '%s' is not correctly initialized. You probably forgot to call the super constructor.", typeid(command).name));
         }
 
-        commands.put(command.getName(), command);
+        _commands.put(command.getName(), command);
 
         foreach (string a ; command.getAliases()) {
-            commands.put(a, command);
+            _commands.put(a, command);
         }
 
         return command;
@@ -309,7 +316,7 @@ class Application
         Map!(string, Command) commands = new HashMap!(string, Command)();
 
         foreach (Command command ; _commands.values()) {
-            if (namespace == extractNamespace(command.getName(), stringUtils.count(namespace, ':') + 1)) {
+            if (namespace == extractNamespace(command.getName(), new Integer(StringUtils.count(namespace, ':') + 1))) {
                 commands.put(command.getName(), command);
             }
         }
@@ -322,32 +329,45 @@ class Application
         return extractNamespace(name, null);
     }
 
-    public string extractNamespace(string name, int limit)
+    public string extractNamespace(string name, Integer limit)
     {
-        List!(string) parts = new ArrayList!(string)(Arrays.asList(name.split(":")));
-        parts.remove(parts.size() - 1);
+        List!(string) parts = new ArrayList!(string)();
+       foreach(value; name.split(":")) {
+           parts.add(value);
+       }
+        parts.removeAt(parts.size() - 1);
 
         if (parts.size() == 0) {
             return null;
         }
 
-        if (limit != null && parts.size() > limit) {
-            parts = parts.subList(0, limit);
+        if (limit !is null && parts.size() > limit.intValue()) {
+            // parts = parts.subList(0, limit);
+            List!(string) temp = new ArrayList!(string)();
+            for(int i = 0 ; i< limit.intValue();i++)
+            {
+                temp.add(parts.get(i));
+            }
+            parts = temp;
+            
         }
-
-        return StringUtils.join(parts.toArray(new String[parts.size()]), ":");
+        string[] res;
+        foreach(value; parts) {
+            res ~= value;
+        }
+        return StringUtils.join(res, ":");
     }
 
     public Command get(string name)
     {
         if (!_commands.containsKey(name)) {
-            throw new InvalidArgumentException(string.format("The command '%s' does not exist.", name));
+            throw new InvalidArgumentException(format("The command '%s' does not exist.", name));
         }
 
         Command command = _commands.get(name);
 
-        if (wantHelps) {
-            wantHelps = false;
+        if (_wantHelps) {
+            _wantHelps = false;
 
             HelpCommand helpCommand = cast(HelpCommand) get("help");
             helpCommand.setCommand(command);
@@ -370,18 +390,23 @@ class Application
         string namespace;
         foreach (Command command ; _commands.values()) {
             namespace = extractNamespace(command.getName());
-            if (namespace != null) {
+            if (namespace !is null) {
                 namespaces.add(namespace);
             }
             foreach (string a ; command.getAliases()) {
                 extractNamespace(a);
-                if (namespace != null) {
+                if (namespace !is null) {
                     namespaces.add(namespace);
                 }
             }
         }
 
-        return namespaces.toArray(new String[namespaces.size()]);
+        string[] res;
+        foreach(value; namespaces) {
+            res ~= value;
+        }
+
+        return res;
     }
 
     protected string getCommandName(Input input)
@@ -433,8 +458,8 @@ class Application
 
     public int[] getTerminalDimensions()
     {
-        if (terminalDimensions != null) {
-            return terminalDimensions;
+        if (_terminalDimensions !is null) {
+            return _terminalDimensions;
         }
 
 //        string sttystring = getSttyColumns();
@@ -445,25 +470,26 @@ class Application
     public string getSttyColumns()
     {
         // todo make this work
+        implementationMissing();
+        // string sttyColumns = null;
+        // try {
+        //     ProcessBuilder builder = new ProcessBuilder("/bin/bash", "stty", "-a");
+        //     Process process = builder.start();
+        //     StringBuilder o = new StringBuilder();
+        //     BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        //     string line, previous = null;
+        //     while ((line = br.readLine()) !is null) {
+        //         if (!line == previous) {
+        //             previous = line;
+        //             o.append(line).append('\n');
+        //         }
+        //     }
+        //     sttyColumns = o.toString();
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
 
-        string sttyColumns = null;
-        try {
-            ProcessBuilder builder = new ProcessBuilder("/bin/bash", "stty", "-a");
-            Process process = builder.start();
-            StringBuilder o = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            string line, previous = null;
-            while ((line = br.readLine()) != null) {
-                if (!line == previous) {
-                    previous = line;
-                    o.append(line).append('\n');
-                }
-            }
-            sttyColumns = o.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sttyColumns;
+        // return sttyColumns;
+        return null;
     }
 }

@@ -27,14 +27,14 @@ class HelpCommand : Command
             .setName("help")
             .setDescription("Displays help for a command")
             .setDefinition(definition)
-            .setHelp("The <info>%command.name%</info> command displays help for a given command:\n" +
-                    "\n" +
-                    "  <info>%command.name% list</info>\n" +
-                    "\n" +
-                    "You can also output the help in other formats by using the <comment>--format</comment> option:\n" +
-                    "\n" +
-                    "  <info>%command.name% --format=xml list</info>\n" +
-                    "\n" +
+            .setHelp("The <info>%command.name%</info> command displays help for a given command:\n" ~
+                    "\n" ~
+                    "  <info>%command.name% list</info>\n" ~
+                    "\n" ~
+                    "You can also output the help in other formats by using the <comment>--format</comment> option:\n" ~
+                    "\n" ~
+                    "  <info>%command.name% --format=xml list</info>\n" ~
+                    "\n" ~
                     "To display the list of available commands, please use the <info>list</info> command.\n")
         ;
     }
@@ -46,11 +46,11 @@ class HelpCommand : Command
 
     override protected int execute(Input input, Output output)
     {
-        if (command == null) {
+        if (command is null) {
             command = getApplication().find(input.getArgument("command_name"));
         }
 
-        if (input.getOption("xml") != null) {
+        if (input.getOption("xml") !is null) {
             input.setOption("format", "xml");
         }
 

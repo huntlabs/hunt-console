@@ -7,8 +7,12 @@ import hunt.collection.Map;
 import hunt.console.formatter.OutputFormatter;
 import hunt.console.formatter.OutputFormatterStyle;
 import hunt.console.formatter.OutputFormatterStyleStack;
-
+import hunt.console.formatter.DefaultOutputFormatterStyle;
+import hunt.text.StringBuilder;
+import hunt.text.Common;
+import hunt.logging;
 import std.regex;
+import std.string;
 
 class DefaultOutputFormatter : OutputFormatter
 {
@@ -45,7 +49,7 @@ class DefaultOutputFormatter : OutputFormatter
 
     public this(bool decorated, Map!(string, OutputFormatterStyle) styles)
     {
-        styles = new HashMap!(string, OutputFormatterStyle)();
+        this.styles = new HashMap!(string, OutputFormatterStyle)();
         this.decorated = decorated;
 
         setStyle("error", new DefaultOutputFormatterStyle("white", "red"));
@@ -70,18 +74,18 @@ class DefaultOutputFormatter : OutputFormatter
 
     override public void setStyle(string name, OutputFormatterStyle style)
     {
-        styles.put(name.toLowerCase(), style);
+        styles.put(name.toLower(), style);
     }
 
     override public bool hasStyle(string name)
     {
-        return styles.containsKey(name.toLowerCase());
+        return styles.containsKey(name.toLower());
     }
 
     override public OutputFormatterStyle getStyle(string name)
     {
         if (!hasStyle(name)) {
-            throw new InvalidArgumentException(string.format("Undefined style: %s", name));
+            throw new InvalidArgumentException(std.string.format("Undefined style: %s", name));
         }
 
         return styles.get(name);
@@ -89,43 +93,45 @@ class DefaultOutputFormatter : OutputFormatter
 
     override public string format(string message)
     {
-        if (message == null) {
+        if (message is null) {
             return "";
         }
 
         int offset = 0;
         StringBuilder output = new StringBuilder();
 
-        Matcher matcher = TAG_PATTERN.matcher(message);
+        auto  matchers = matchAll(message,TAG_PATTERN);
 
         bool open;
         string tag;
         OutputFormatterStyle style;
-        while (matcher.find()) {
-            int pos = matcher.start();
-            string text = matcher.group();
+        // logInfo("mesg : ",message);
+        foreach(matcher; matchers) {
+            string text = matcher.captures[0];
+            int pos = cast(int)(message[offset..$].indexOf(text))+offset;
 
             // add the text up to the next tag
+            // logInfo("pos : ",pos, " offset: ",offset," text :",text);
             output.append(applyCurrentStyle(message.substring(offset, pos)));
-            offset = pos + text.length();
+            offset = pos + cast(int)(text.length);
 
             // opening tag?
             open = text[1] != '/';
             if (open) {
-                tag = matcher.group(2);
+                tag = matcher.captures[2];
             } else {
-                tag = matcher.group(3);
+                tag = matcher.captures[3];
             }
 
-            if (!open && (tag == null || tag.isEmpty())) {
+            if (!open && (tag is null || tag.length == 0)) {
                 // </>
                 styleStack.pop();
             } else if (pos > 0 && message.charAt(pos - 1) == '\\') {
                 // escaped tag
                 output.append(applyCurrentStyle(text));
             } else {
-                style = createStyleFromString(tag.toLowerCase());
-                if (style == null) {
+                style = createStyleFromString(tag.toLower());
+                if (style is null) {
                     output.append(applyCurrentStyle(text));
                 } else {
                     if (open) {
@@ -139,32 +145,32 @@ class DefaultOutputFormatter : OutputFormatter
 
         output.append(applyCurrentStyle(message.substring(offset)));
 
-        return output.toString().replaceAll("\\\\<", "<");
+        return output.toString().replace("\\\\<", "<");
     }
 
-    private OutputFormatterStyle createStyleFromString(string string)
+    private OutputFormatterStyle createStyleFromString(string str)
     {
-        if (styles.containsKey(string)) {
-            return styles.get(string);
+        if (styles.containsKey(str)) {
+            return styles.get(str);
         }
 
-        Matcher matcher = STYLE_PATTERN.matcher(string.toLowerCase());
+        auto matchers = matchAll(str.toLower(),STYLE_PATTERN);
 
         OutputFormatterStyle style = new DefaultOutputFormatterStyle();
 
         string type;
-        while (matcher.find()) {
-            type = matcher.group(1);
+        foreach(matcher; matchers){
+            type = matcher.captures[1];
             switch (type) {
                 case "fg":
-                    style.setForeground(matcher.group(2));
+                    style.setForeground(matcher.captures[2]);
                     break;
                 case "bg":
-                    style.setBackground(matcher.group(2));
+                    style.setBackground(matcher.captures[2]);
                     break;
                 default:
                     try {
-                        style.setOption(matcher.group(2));
+                        style.setOption(matcher.captures[2]);
                     } catch (InvalidArgumentException e) {
                         return null;
                     }
@@ -177,7 +183,7 @@ class DefaultOutputFormatter : OutputFormatter
 
     private string applyCurrentStyle(string text)
     {
-        if (isDecorated() && text.length() > 0) {
+        if (isDecorated() && text.length > 0) {
             return styleStack.getCurrent().apply(text);
         }
 

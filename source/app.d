@@ -1,8 +1,10 @@
 import std.stdio;
 
 import hunt.console;
+import core.thread;
+import hunt.Exceptions;
 
-void main()
+void main(string[] args)
 {
 	Application app = new Application("Hunt Console", "1.0.0");
 
@@ -17,9 +19,9 @@ void main()
 			{
 				bar.advance();
 				try {
-					Thread.sleep(50);
+					Thread.sleep(dur!("seconds")( 5 ));
 				} catch (InterruptedException ex) {
-					Thread.currentThread().interrupt();
+					// Thread.currentThread().interrupt();
 				}
 			}
 			bar.finish();
@@ -27,5 +29,5 @@ void main()
 		}
 	}));
 
-	app.run(args);
+	app.run([]);
 }

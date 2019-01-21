@@ -1,6 +1,6 @@
 module hunt.console.output.Verbosity;
 
-public enum Verbosity
+public enum Verbosity : int
 {
     QUIET,
     NORMAL,

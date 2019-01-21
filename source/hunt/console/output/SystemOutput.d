@@ -36,7 +36,7 @@ class SystemOutput : StreamOutput , ConsoleOutput
 
     private void initialize()
     {
-        this.stderr = new StreamOutput(System.err);
+        this.stderr = new StreamOutput(new FileOutputStream(std.stdio.stderr));
     }
 
     override public void setDecorated(bool decorated)

@@ -1,5 +1,7 @@
 module hunt.console.helper.HelperSet;
 
+import std.string;
+
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
 
@@ -23,7 +25,7 @@ class HelperSet : Iterable!(Helper)
 
     public this(List!(Helper) helpers)
     {
-        helpers = new HashMap!(string, Helper)();
+        this.helpers = new HashMap!(string, Helper)();
         foreach (Helper helper ; helpers) {
             set(helper);
         }
@@ -37,7 +39,7 @@ class HelperSet : Iterable!(Helper)
     public void set(Helper helper, string aliasName)
     {
         helpers.put(helper.getName(), helper);
-        if (aliasName != null) {
+        if (aliasName !is null) {
             helpers.put(aliasName, helper);
         }
 
@@ -52,7 +54,7 @@ class HelperSet : Iterable!(Helper)
     public Helper get(string name)
     {
         if (!has(name)) {
-            throw new InvalidArgumentException(string.format("The helper '%s' is not defined.", name));
+            throw new InvalidArgumentException(format("The helper '%s' is not defined.", name));
         }
 
         return helpers.get(name);
@@ -68,8 +70,17 @@ class HelperSet : Iterable!(Helper)
         this.command = command;
     }
 
-    public Iterator!(Helper) iterator()
-    {
-        return helpers.values().iterator();
+    // public Iterator!(Helper) iterator()
+    // {
+    //     return helpers.byValue;
+    // }
+    override int opApply(scope int delegate(ref Helper) dg) {
+        int result = 0;
+        foreach (Helper v; helpers.byValue) {
+            result = dg(v);
+            if (result != 0)
+                return result;
+        }
+        return result;
     }
 }

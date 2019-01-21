@@ -17,20 +17,20 @@ class ListCommand : Command
             .setName("list")
             .setDefinition(createDefinition())
             .setDescription("Lists commands")
-            .setHelp("The <info>%command.name%</info> command lists all commands:\n" +
-                    "\n" +
-                    "  <info>%command.name%</info>\n" +
-                    "\n" +
-                    "You can also display the commands for a specific namespace:\n" +
-                    "\n" +
-                    "  <info>%command.name% test</info>\n" +
-                    "\n" +
-                    "You can also output the information in other formats by using the <comment>--format</comment> option:\n" +
-                    "\n" +
-                    "  <info>%command.name% --format=xml</info>\n" +
-                    "\n" +
-                    "It's also possible to get raw list of commands (useful for embedding command runner):\n" +
-                    "\n" +
+            .setHelp("The <info>%command.name%</info> command lists all commands:\n" ~
+                    "\n" ~
+                    "  <info>%command.name%</info>\n" ~
+                    "\n" ~
+                    "You can also display the commands for a specific namespace:\n" ~
+                    "\n" ~
+                    "  <info>%command.name% test</info>\n" ~
+                    "\n" ~
+                    "You can also output the information in other formats by using the <comment>--format</comment> option:\n" ~
+                    "\n" ~
+                    "  <info>%command.name% --format=xml</info>\n" ~
+                    "\n" ~
+                    "It's also possible to get raw list of commands (useful for embedding command runner):\n" ~
+                    "\n" ~
                     "  <info>%command.name% --raw</info>\n")
         ;
     }
@@ -42,7 +42,7 @@ class ListCommand : Command
 
     override protected int execute(Input input, Output output)
     {
-        if (input.getOption("xml") != null) {
+        if (input.getOption("xml") !is null) {
             input.setOption("format", "xml");
         }
 

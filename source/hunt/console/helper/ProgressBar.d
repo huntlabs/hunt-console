@@ -5,12 +5,20 @@ import hunt.console.output.Output;
 import hunt.console.output.Verbosity;
 import hunt.console.util.StringUtils;
 
-// import hunt.collection.Arrays;
+import hunt.Exceptions;
 import hunt.collection.HashMap;
 import hunt.collection.Map;
 import hunt.console.helper.PlaceholderFormatter;
+import hunt.util.DateTime;
+import hunt.text.StringBuilder;
+import hunt.collection.StringBuffer;
+import hunt.math.Helper;
+import hunt.console.helper.AbstractHelper;
+import hunt.console.output.Verbosity;
 
 import std.regex;
+import std.string;
+import std.conv;
 
 class ProgressBar
 {
@@ -64,7 +72,7 @@ class ProgressBar
 
     public static void setPlaceholderFormatter(string name, PlaceholderFormatter formatter)
     {
-        if (formatters == null) {
+        if (formatters is null) {
             formatters = initPlaceholderFormatters();
         }
 
@@ -73,7 +81,7 @@ class ProgressBar
 
     public static PlaceholderFormatter getPlaceholderFormatter(string name)
     {
-        if (formatters == null) {
+        if (formatters is null) {
             formatters = initPlaceholderFormatters();
         }
 
@@ -82,7 +90,7 @@ class ProgressBar
 
     public static void setFormatDefinition(string name, string format)
     {
-        if (formats == null) {
+        if (formats is null) {
             formats = initFormats();
         }
 
@@ -91,7 +99,7 @@ class ProgressBar
 
     public static string getFormatDefinition(string name)
     {
-        if (formats == null) {
+        if (formats is null) {
             formats = initFormats();
         }
 
@@ -160,8 +168,8 @@ class ProgressBar
 
     public string getBarCharacter()
     {
-        if (barChar == null) {
-            return (max == null || max == 0) ? emptyBarChar : "=";
+        if (barChar is null) {
+            return (max == int.init || max == 0) ? emptyBarChar : "=";
         }
 
         return barChar;
@@ -190,9 +198,9 @@ class ProgressBar
     public void setFormat(string format)
     {
         // try to use the _nomax variant if available
-        if (max == null || max == 0 && getFormatDefinition(format ~ "_nomax") != null) {
+        if (max == int.init || max == 0 && getFormatDefinition(format ~ "_nomax") !is null) {
             this.format = getFormatDefinition(format ~ "_nomax");
-        } else if (getFormatDefinition(format) != null) {
+        } else if (getFormatDefinition(format) !is null) {
             this.format = getFormatDefinition(format);
         } else {
             this.format = format;
@@ -208,7 +216,7 @@ class ProgressBar
 
     public void start()
     {
-        start(null);
+        start(int.init);
     }
 
     public void start(int max)
@@ -217,7 +225,7 @@ class ProgressBar
         step = 0;
         percent = 0f;
 
-        if (max != null) {
+        if (max != int.init) {
             setMaxSteps(max);
         }
 
@@ -250,22 +258,22 @@ class ProgressBar
             throw new LogicException("You can't regress the progress bar.");
         }
 
-        if (max != null && max > 0 && step > max) {
+        if (max != int.init && max > 0 && step > max) {
             max = step;
         }
 
         int prevPeriod = this.step / redrawFreq;
         int currPeriod = step / redrawFreq;
         this.step = step;
-        percent = (max != null && max > 0) ? (cast(float) step) / max : 0f;
-        if (prevPeriod != currPeriod || (max != null && max == step)) {
+        percent = (max != int.init && max > 0) ? (cast(float) step) / max : 0f;
+        if (prevPeriod != currPeriod || (max != int.init && max == step)) {
             display();
         }
     }
 
     public void finish()
     {
-        if (max == null || max == 0) {
+        if (max == int.init || max == 0) {
             max = step;
         }
 
@@ -283,27 +291,32 @@ class ProgressBar
             return;
         }
 
-        Pattern pattern = Pattern.compile("%([a-z\\-_]+)(?:\\:([^%]+))?%", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(format);
+        string pattern = ("%([a-z\\-_]+)(?:\\:([^%]+))?%"/* , Pattern.CASE_INSENSITIVE */);
+        auto matchers = matchAll(this.format,pattern);
 
+        int startPos = 0;
         string text = "";
         StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            string format = matcher.group(1);
+        foreach(matcher ; matchers) {
+            string format = matcher.captures[1];
             PlaceholderFormatter formatter = getPlaceholderFormatter(format);
-            if (formatter != null) {
+            if (formatter !is null) {
                 text = formatter.format(this, output);
-            } else if (format != null) {
+            } else if (format !is null) {
                 text = messages.get(format);
             }
 
-            if (matcher.group(2) != null) {
-                text = String.format("%" ~ matcher.group(2), text);
+            if (matcher.captures[2] !is null) {
+                text = std.string.format("%" ~ matcher.captures[2], text);
             }
 
-            matcher.appendReplacement(sb, text);
+            // matcher.appendReplacement(sb, text);
+            auto pos = cast(int)(this.format.indexOf(format));
+            sb.append(this.format[startPos..pos].replace(format,text));
+            startPos = pos + cast(int)(format.length);
         }
-        matcher.appendTail(sb);
+        // matcher.appendTail(sb);
+        sb.append(this.format[startPos .. $]);
 
         overwrite(sb.toString());
     }
@@ -315,23 +328,25 @@ class ProgressBar
         }
 
         char[] array = new char[formatLineCount];
-        Arrays.fill(array, '\n');
+        // Arrays.fill(array, '\n');
+        for(int i = 0 ; i<formatLineCount; i++ )
+            array[i] = '\n';
 
-        overwrite(new String(array));
+        overwrite(cast(string)(array));
     }
 
     public void setMaxSteps(int max)
     {
-        this.max = Math.max(0, max);
-        stepWidth = this.max > 0 ? max.toString().length() : 4;
+        this.max = MathHelper.max(0, max);
+        stepWidth = this.max > 0 ? cast(int)(max.to!string.length) : 4;
     }
 
     public void overwrite(string message)
     {
-        String[] lines = StringUtils.split(message, '\n');
+        string[] lines = StringUtils.split(message, '\n');
 
         // append whitespace to match the line's length
-        if (lastMessagesLength != null) {
+        if (lastMessagesLength != int.init) {
             for (int i = 0; i < lines.length; i++) {
                 if (lastMessagesLength > AbstractHelper.strlenWithoutDecoration(output.getFormatter(), lines[i])) {
                     lines[i] = StringUtils.padRight(lines[i], lastMessagesLength, " ");
@@ -348,9 +363,9 @@ class ProgressBar
         }
 
         if (formatLineCount > 0) {
-            output.write(string.format("\033[%dA", formatLineCount));
+            output.write(std.string.format("\033[%dA", formatLineCount));
         }
-        output.write(stringUtils.join(lines, "\n"));
+        output.write(StringUtils.join(lines, "\n"));
 
         lastMessagesLength = 0;
         foreach (string line ; lines) {
@@ -363,15 +378,15 @@ class ProgressBar
 
     public string determineBestFormat()
     {
-        switch (output.getVerbosity()) {
+        switch (output.getVerbosity()) with(Verbosity){
             case VERBOSE:
-                return max == null || max == 0 ? "verbose_nomax" : "verbose";
+                return max == int.init || max == 0 ? "verbose_nomax" : "verbose";
             case VERY_VERBOSE:
-                return max == null || max == 0 ? "very_verbose_nomax" : "very_verbose";
+                return max == int.init || max == 0 ? "very_verbose_nomax" : "very_verbose";
             case DEBUG:
-                return max == null || max == 0 ? "debug_nomax" : "debug";
+                return max == int.init || max == 0 ? "debug_nomax" : "debug";
             default:
-                return max == null || max == 0 ? "normal_nomax" : "normal";
+                return max == int.init || max == 0 ? "normal_nomax" : "normal";
         }
     }
 
@@ -386,8 +401,8 @@ class ProgressBar
                 int completeBars = bar.getMaxSteps() > 0 ? cast(int) (bar.getProgressPercent() * bar.getBarWidth()) : bar.getProgress() % bar.getBarWidth();
                 string display = StringUtils.padRight("", completeBars, bar.getBarCharacter());
                 if (completeBars < bar.getBarWidth()) {
-                    int emptyBars = bar.getBarWidth() - completeBars - AbstractHelper.strlenWithoutDecoration(output.getFormatter(), string.valueOf(bar.getProgressCharacter()));
-                    display += bar.getProgressCharacter() + StringUtils.padRight("", emptyBars, bar.getEmptyBarCharacter());
+                    int emptyBars = bar.getBarWidth() - completeBars - AbstractHelper.strlenWithoutDecoration(output.getFormatter(), to!string(bar.getProgressCharacter()));
+                    display ~= bar.getProgressCharacter() ~ StringUtils.padRight("", emptyBars, bar.getEmptyBarCharacter());
                 }
 
                 return display;
@@ -398,7 +413,8 @@ class ProgressBar
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return AbstractHelper.formatTime(Math.round(( DateTimeHelper.currentTimeMillis() / 1000) - (bar.getStartTime() / 1000)));
+                import std.math;
+                return AbstractHelper.formatTime(cast(long)/* MathHelper. */round(( DateTimeHelper.currentTimeMillis() / 1000) - (bar.getStartTime() / 1000)));
             }
         });
 
@@ -414,7 +430,8 @@ class ProgressBar
                 if (bar.getProgress() == 0) {
                     remaining = 0;
                 } else {
-                    remaining = Math.round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * (cast(float) bar.getMaxSteps() - cast(float) bar.getProgress()));
+                    import std.math;
+                    remaining = /* MathHelper. */cast(long)round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * (cast(float) bar.getMaxSteps() - cast(float) bar.getProgress()));
                 }
 
                 return AbstractHelper.formatTime(remaining);
@@ -433,7 +450,8 @@ class ProgressBar
                 if (bar.getProgress() == 0) {
                     estimated = 0;
                 } else {
-                    estimated = Math.round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * cast(float) bar.getMaxSteps());
+                    import std.math;
+                    estimated =/*  MathHelper. */cast(long)round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * cast(float) bar.getMaxSteps());
                 }
 
                 return AbstractHelper.formatTime(estimated);
@@ -444,7 +462,9 @@ class ProgressBar
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return AbstractHelper.formatMemory(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+                implementationMissing();
+                return null;
+                // return AbstractHelper.formatMemory(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
             }
         });
 
@@ -452,7 +472,7 @@ class ProgressBar
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return StringUtils.padLeft(string.valueOf(bar.getProgress()), bar.getStepWidth(), " ");
+                return StringUtils.padLeft(to!string(bar.getProgress()), bar.getStepWidth(), " ");
             }
         });
 
@@ -460,7 +480,7 @@ class ProgressBar
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return String.valueOf(bar.getMaxSteps());
+                return to!string(bar.getMaxSteps());
             }
         });
 
@@ -468,7 +488,7 @@ class ProgressBar
         {
             override public string format(ProgressBar bar, Output output)
             {
-                return String.valueOf(cast(int) (bar.getProgressPercent() * 100));
+                return to!string(cast(int) (bar.getProgressPercent() * 100));
             }
         });
 

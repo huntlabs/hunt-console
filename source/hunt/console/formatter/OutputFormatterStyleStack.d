@@ -5,6 +5,7 @@ import hunt.console.formatter.OutputFormatterStyle;
 
 import hunt.collection.ArrayList;
 import hunt.collection.List;
+import hunt.console.formatter.DefaultOutputFormatterStyle;
 
 class OutputFormatterStyleStack
 {
@@ -44,16 +45,20 @@ class OutputFormatterStyleStack
             return emptyStyle;
         }
 
-        if (style == null) {
-            return styles.remove(styles.size() - 1);
+        if (style is null) {
+            return styles.removeAt(styles.size() - 1);
         }
 
         OutputFormatterStyle stackedStyle;
         for (int i = (styles.size() - 1); i >= 0; i--) {
             stackedStyle = styles.get(i);
-            if (style.apply("").equals(stackedStyle.apply(""))) {
-                styles = styles.subList(0, i);
-
+            if (style.apply("") == (stackedStyle.apply(""))) {
+                auto substyles = new ArrayList!(OutputFormatterStyle)();
+                for(int j = 0 ;j < i;j++)
+                {   
+                    substyles.add(styles.get(i));
+                }
+                styles = substyles;
                 return stackedStyle;
             }
         }

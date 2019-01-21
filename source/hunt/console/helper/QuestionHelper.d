@@ -27,7 +27,7 @@ class QuestionHelper : AbstractHelper
 
     protected string doAsk(Output output, Question question)
     {
-        InputStream inputStream = this.inputStream == null ? new FileInputStream(stdin) : this.inputStream;
+        InputStream inputStream = this.inputStream is null ? new FileInputStream(stdin) : this.inputStream;
 
         string message = question.getQuestion();
         if (cast(ChoiceQuestion)question !is null) {
@@ -39,10 +39,10 @@ class QuestionHelper : AbstractHelper
         string answer;
         if (question.isHidden()) {
             // Console console = System.console();
-            // if (console == null) {
+            // if (console is null) {
             //     throw new RuntimeException("Unable to hide input (console not available)");
             // }
-            // answer = String.valueOf(console.readPassword());
+            // answer = to!string(console.readPassword());
             implementationMissing();
         } else {
             implementationMissing();
@@ -50,7 +50,7 @@ class QuestionHelper : AbstractHelper
             // answer = scanner.next();
         }
 
-        if (answer == null || answer.isEmpty()) {
+        if (answer is null || answer.length == 0) {
             answer = question.getDefaultValue();
         }
 

@@ -1,5 +1,8 @@
 module hunt.console.formatter.DefaultOutputFormatterStyle;
 
+import std.string;
+import std.conv;
+
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.util.StringUtils;
 
@@ -9,6 +12,7 @@ import hunt.collection.List;
 import hunt.collection.ArrayList;
 import hunt.console.formatter.OutputFormatterStyle;
 import hunt.console.formatter.OutputFormatterOption;
+import hunt.logging;
 
 class DefaultOutputFormatterStyle : OutputFormatterStyle
 {
@@ -64,32 +68,37 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         this(foreground, background, null);
     }
 
-    public this(string foreground, string background, string[] options)
+    public this(string foreground, string background, string[] opts)
     {
-        options = new ArrayList!OutputFormatterOption();
-        if (foreground != null) {
+        this.options = new ArrayList!OutputFormatterOption();
+        if (foreground !is null) {
             setForeground(foreground);
         }
-        if (background != null) {
+        if (background !is null) {
             setBackground(background);
         }
-        if (options != null && options.length > 0) {
-            setOptions(options);
+        // logInfo("---infos : ",opts);
+        if (opts !is null && opts.length > 0) {
+            setOptions(opts);
         }
     }
 
     override public void setForeground(string color)
     {
-        if (color == null) {
+        if (color is null) {
             foreground = null;
             return;
         }
 
         if (!availableForegroundColors.containsKey(color)) {
-            throw new InvalidArgumentException(string.format(
+            string[] keys;
+            foreach(string k,_; availableForegroundColors) {
+                keys ~= k;
+            }   
+            throw new InvalidArgumentException(format(
                     "Invalid foreground color specified: '%s'. Expected one of (%s)",
                     color,
-                    StringUtils.join(availableForegroundColors.keySet().toArray(new String[availableForegroundColors.size()]), ", ")
+                    StringUtils.join(keys, ", ")
             ));
         }
 
@@ -98,16 +107,20 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
 
     override public void setBackground(string color)
     {
-        if (color == null) {
+        if (color is null) {
             background = null;
             return;
         }
 
         if (!availableBackgroundColors.containsKey(color)) {
-            throw new InvalidArgumentException(string.format(
+            string[] keys;
+            foreach(string k,_; availableBackgroundColors) {
+                keys ~= k;
+            } 
+            throw new InvalidArgumentException(format(
                     "Invalid background color specified: '%s'. Expected one of (%s)",
                     color,
-                    StringUtils.join(availableBackgroundColors.keySet().toArray(new String[availableBackgroundColors.size()]), ", ")
+                    StringUtils.join(keys, ", ")
             ));
         }
 
@@ -117,8 +130,12 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
     override public void setOption(string option)
     {
         if (!availableOptions.containsKey(option)) {
-            throw new InvalidArgumentException(string.format("Invalid option specified: '%s'. Expected one of (%s)",
-                option, stringUtils.join(availableOptions.keySet().toArray(new String[availableOptions.size()]), ",")));
+            string[] keys;
+            foreach(string k,_; availableOptions) {
+                keys ~= k;
+            }
+            throw new InvalidArgumentException(format("Invalid option specified: '%s'. Expected one of (%s)",
+                option, StringUtils.join(keys, ",")));
         }
 
         if (!options.contains(availableOptions.get(option))) {
@@ -129,8 +146,12 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
     override public void unsetOption(string option)
     {
         if (!availableOptions.containsKey(option)) {
-            throw new InvalidArgumentException(string.format("Invalid option specified: '%s'. Expected one of (%s)",
-                option, stringUtils.join(availableOptions.keySet().toArray(new String[availableOptions.size()]), ",")));
+            string[] keys;
+            foreach(string k,_; availableOptions) {
+                keys ~= k;
+            }
+            throw new InvalidArgumentException(format("Invalid option specified: '%s'. Expected one of (%s)",
+                option, StringUtils.join(keys, ",")));
         }
 
         if (options.contains(availableOptions.get(option))) {
@@ -140,7 +161,7 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
 
     override public void setOptions(string[] options)
     {
-        this.options = new ArrayList!string();
+        this.options = new ArrayList!OutputFormatterOption();
 
         foreach (string option ; options) {
             setOption(option);
@@ -152,29 +173,36 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         List!(string) setCodes = new ArrayList!string();
         List!(string) unsetCodes = new ArrayList!string();
 
-        if (foreground != null) {
-            setCodes.add(string.valueOf(foreground.getSet()));
-            unsetCodes.add(string.valueOf(foreground.getUnset()));
+        if (foreground !is null) {
+            setCodes.add(to!string(foreground.getSet()));
+            unsetCodes.add(to!string(foreground.getUnset()));
         }
-        if (background != null) {
-            setCodes.add(string.valueOf(background.getSet()));
-            unsetCodes.add(string.valueOf(background.getUnset()));
+        if (background !is null) {
+            setCodes.add(to!string(background.getSet()));
+            unsetCodes.add(to!string(background.getUnset()));
         }
 
         foreach (OutputFormatterOption option ; options) {
-            setCodes.add(string.valueOf(option.getSet()));
-            unsetCodes.add(string.valueOf(option.getUnset()));
+            setCodes.add(to!string(option.getSet()));
+            unsetCodes.add(to!string(option.getUnset()));
         }
 
         if (setCodes.size() == 0) {
             return text;
         }
-
-        return String.format(
+        string[] codes;
+        foreach(value; setCodes) {
+            codes ~= value;
+        }
+        string[] uncodes;
+        foreach(value; unsetCodes) {
+            uncodes ~= value;
+        }
+        return format(
                 "\033[%sm%s\033[%sm",
-                StringUtils.join(setCodes.toArray(new String[setCodes.size()]), ";"),
+                StringUtils.join(codes, ";"),
                 text,
-                StringUtils.join(unsetCodes.toArray(new String[unsetCodes.size()]), ";")
+                StringUtils.join(uncodes, ";")
         );
     }
 
@@ -185,18 +213,18 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
 
         DefaultOutputFormatterStyle that = cast(DefaultOutputFormatterStyle) o;
 
-        if (background != null ? !background == that.background : that.background != null) return false;
-        if (foreground != null ? !foreground == that.foreground : that.foreground != null) return false;
-        if (options != null ? !options == that.options : that.options != null) return false;
+        if (background !is null ? !(background == that.background) : that.background !is null) return false;
+        if (foreground !is null ? !(foreground == that.foreground) : that.foreground !is null) return false;
+        if (options !is null ? !(options == that.options) : that.options !is null) return false;
 
         return true;
     }
 
     override public size_t toHash() @trusted nothrow
     {
-        int result = foreground != null ? foreground.hashCode() : 0;
-        result = 31 * result + (background != null ? background.hashCode() : 0);
-        result = 31 * result + (options != null ? options.hashCode() : 0);
+        int result = foreground !is null ? cast(int)(foreground.toHash()) : 0;
+        result = 31 * result + (background !is null ? cast(int)(background.toHash()) : 0);
+        result = 31 * result + (options !is null ? cast(int)(options.toHash()) : 0);
         return result;
     }
 }
