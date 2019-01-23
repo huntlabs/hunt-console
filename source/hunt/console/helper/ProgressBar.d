@@ -292,7 +292,7 @@ class ProgressBar
         }
 
         string pattern = ("%([a-z\\-_]+)(?:\\:([^%]+))?%"/* , Pattern.CASE_INSENSITIVE */);
-        auto matchers = matchAll(this.format,pattern);
+        auto matchers = matchAll(this.format,regex(pattern,"i"));
 
         int startPos = 0;
         string text = "";

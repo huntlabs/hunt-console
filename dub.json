@@ -7,5 +7,22 @@
     "targetType": "executable",
     "dependencies": {
         "hunt": "~>1.0.0"
-    }
+    },
+    "configurations":[
+        {
+            "targetName": "hunt-console",
+            "name": "hunt-console",
+            "targetType": "executable",
+            "importPaths":["source"]
+        },
+        {
+			"name": "unittest",
+            "targetType": "executable",
+			"targetName": "console-test",
+			"excludedSourceFiles": ["source/app.d"],
+			"sourcePaths": ["test/"],
+			"importPaths": ["test/"]
+		}
+    ]
+
 }

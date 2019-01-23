@@ -6,6 +6,8 @@ import hunt.console.formatter.OutputFormatterStyle;
 import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.console.formatter.DefaultOutputFormatterStyle;
+import hunt.logging;
+import std.string;
 
 class OutputFormatterStyleStack
 {
@@ -31,6 +33,7 @@ class OutputFormatterStyleStack
 
     public void push(OutputFormatterStyle style)
     {
+        // logDebug("push : ",(cast(DefaultOutputFormatterStyle)style).toHash);
         styles.add(style);
     }
 
@@ -41,6 +44,7 @@ class OutputFormatterStyleStack
 
     public OutputFormatterStyle pop(OutputFormatterStyle style)
     {
+        // logDebug("styles.size() : ",styles.size());
         if (styles.size() == 0) {
             return emptyStyle;
         }
@@ -48,15 +52,18 @@ class OutputFormatterStyleStack
         if (style is null) {
             return styles.removeAt(styles.size() - 1);
         }
+        // logDebug("pop : ",(cast(DefaultOutputFormatterStyle)style).toHash);
+
 
         OutputFormatterStyle stackedStyle;
         for (int i = (styles.size() - 1); i >= 0; i--) {
             stackedStyle = styles.get(i);
-            if (style.apply("") == (stackedStyle.apply(""))) {
+            // logDebug("------",style.apply("").length," -----",stackedStyle.apply("").length," cmp : ",style.apply("") == stackedStyle.apply(""));
+            if (style.apply("").strip == (stackedStyle.apply("").strip)) {
                 auto substyles = new ArrayList!(OutputFormatterStyle)();
                 for(int j = 0 ;j < i;j++)
                 {   
-                    substyles.add(styles.get(i));
+                    substyles.add(styles.get(j));
                 }
                 styles = substyles;
                 return stackedStyle;

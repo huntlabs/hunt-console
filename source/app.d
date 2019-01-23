@@ -3,11 +3,12 @@ import std.stdio;
 import hunt.console;
 import core.thread;
 import hunt.Exceptions;
+import hunt.logging;
 
 void main(string[] args)
 {
 	Application app = new Application("Hunt Console", "1.0.0");
-
+	app.setAutoExit(false);
 	app.add(new GreetingCommand());
 
 	app.add((new Command("test")).setExecutor(new class CommandExecutor {
@@ -28,6 +29,9 @@ void main(string[] args)
 			return 0;
 		}
 	}));
-
-	app.run([]);
+	// logInfo("run args: ",args);
+	if(args.length > 1)
+		app.run(args[1..$]);
+	else
+		app.run([]);
 }

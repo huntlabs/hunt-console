@@ -338,7 +338,7 @@ class Command
         return help;
     }
 
-    public Command setAliases(string[] aliases)
+    public Command setAliases(string[] aliases...)
     {
         foreach (a ; aliases) {
             validateName(a);

@@ -68,7 +68,7 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         this(foreground, background, null);
     }
 
-    public this(string foreground, string background, string[] opts)
+    public this(string foreground, string background, string[] opts...)
     {
         this.options = new ArrayList!OutputFormatterOption();
         if (foreground !is null) {
@@ -159,11 +159,13 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
         }
     }
 
-    override public void setOptions(string[] options)
+    override public void setOptions(string[] options...)
     {
         this.options = new ArrayList!OutputFormatterOption();
 
         foreach (string option ; options) {
+            if(option.length == 0)
+                continue;
             setOption(option);
         }
     }
@@ -208,7 +210,7 @@ class DefaultOutputFormatterStyle : OutputFormatterStyle
 
     override public bool opEquals(Object o)
     {
-        if (this == o) return true;
+        if (this is o) return true;
         if (!(cast(DefaultOutputFormatterStyle)o !is null)) return false;
 
         DefaultOutputFormatterStyle that = cast(DefaultOutputFormatterStyle) o;

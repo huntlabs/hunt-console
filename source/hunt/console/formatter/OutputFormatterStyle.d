@@ -10,7 +10,7 @@ public interface OutputFormatterStyle
 
     public void unsetOption(string option);
 
-    public void setOptions(string[] options);
+    public void setOptions(string[] options...);
 
     public string apply(string text);
 }

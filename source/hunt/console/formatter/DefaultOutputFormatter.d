@@ -33,7 +33,7 @@ class DefaultOutputFormatter : OutputFormatter
         string pattern = "([^\\\\\\\\]?)<";
 
         // return pattern.matcher(text).replaceAll("$1\\\\<");
-        auto re = regex(pattern, "g");
+        auto re = regex(pattern);
         return text.replaceAll(re,"$1\\\\<");
     }
 
@@ -57,7 +57,10 @@ class DefaultOutputFormatter : OutputFormatter
         setStyle("comment", new DefaultOutputFormatterStyle("yellow"));
         setStyle("question", new DefaultOutputFormatterStyle("black", "cyan"));
 
-        this.styles.putAll(styles);
+        // this.styles.putAll(styles);
+        foreach(string k ,OutputFormatterStyle v ; styles) {
+            this.styles.put(k,v);
+        }
 
         styleStack = new OutputFormatterStyleStack();
     }
@@ -100,7 +103,7 @@ class DefaultOutputFormatter : OutputFormatter
         int offset = 0;
         StringBuilder output = new StringBuilder();
 
-        auto  matchers = matchAll(message,TAG_PATTERN);
+        auto  matchers = matchAll(message,regex(TAG_PATTERN,"im"));
 
         bool open;
         string tag;
@@ -116,13 +119,13 @@ class DefaultOutputFormatter : OutputFormatter
             offset = pos + cast(int)(text.length);
 
             // opening tag?
-            open = text[1] != '/';
+            open = (text[1] != '/');
             if (open) {
                 tag = matcher.captures[2];
             } else {
                 tag = matcher.captures[3];
             }
-
+            // logInfo("tag --- > : ",tag, " len:",tag.length);
             if (!open && (tag is null || tag.length == 0)) {
                 // </>
                 styleStack.pop();

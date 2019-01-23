@@ -24,7 +24,7 @@ class OutputFormatterOption
 
     override public bool opEquals(Object o)
     {
-        if (this == o) return true;
+        if (this is o) return true;
         if (!(cast(OutputFormatterOption)o !is null)) return false;
 
         OutputFormatterOption that = cast(OutputFormatterOption) o;

@@ -129,7 +129,7 @@ class InputOption
 
     override public bool opEquals(Object o)
     {
-        if (this == o) return true;
+        if (this is o) return true;
         if (!(cast(InputOption)o !is null)) return false;
 
         InputOption that =cast(InputOption) o;

@@ -130,6 +130,22 @@ class Application
             }
         }
 
+        if (true == input.hasParameterOption("--ansi")) {
+            output.setDecorated(true);
+        } else if (true == input.hasParameterOption("--no-ansi")) {
+            output.setDecorated(false);
+        }
+
+        if (true == input.hasParameterOption("--no-interaction", "-n")) {
+            input.setInteractive(false);
+        }
+
+         if (true == input.hasParameterOption("--quiet", "-q")) {
+            output.setVerbosity(Verbosity.QUIET);
+        } else if (true == input.hasParameterOption("--verbose", "-v")) {
+            output.setVerbosity(Verbosity.VERBOSE);
+        }
+
         if (name is null) {
             name = _defaultCommand;
             input = new ArrayInput("command", _defaultCommand);
