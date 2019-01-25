@@ -32,7 +32,7 @@ void main(string[] args)
 			return 0;
 		}
 	}));
-	// logInfo("run args: ",args);
+	
 	if(args.length > 1)
 		app.run(args[1..$]);
 	else
