@@ -5,7 +5,7 @@ import hunt.console.command;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
 import hunt.console.helper.QuestionHelper;
-import hunt.console.inputs;
+import hunt.console.input;
 import hunt.console.output.NullOutput;
 import hunt.console.output.Output;
 

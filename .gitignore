@@ -8,6 +8,8 @@ hunt-console.dll
 hunt-console.a
 hunt-console.lib
 hunt-console-test-*
+hunt-console.exe
+console-test
 *.exe
 *.o
 *.obj

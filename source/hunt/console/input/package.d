@@ -1,4 +1,4 @@
-module hunt.console.inputs;
+module hunt.console.input;
 
 public import  hunt.console.input.AbstractInput;
 public import  hunt.console.input.ArgvInput;

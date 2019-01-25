@@ -6,7 +6,7 @@ import hunt.console.error.LogicException;
 import hunt.console.helper.HelperSet;
 import hunt.console.helper.ProgressBar;
 import hunt.console.helper.QuestionHelper;
-import hunt.console.inputs;
+import hunt.console.input;
 import hunt.console.output;
 import hunt.console.util.StringUtils;
 import hunt.console.util.ThrowableUtils;

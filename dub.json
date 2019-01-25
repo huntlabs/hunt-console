@@ -4,15 +4,13 @@
     "copyright": "Copyright (C) 2015-2018, HuntLabs",
     "homepage": "https://www.huntlabs.net/",
     "license": "Apache-2.0",
-    "targetType": "executable",
     "dependencies": {
-        "hunt": "~>1.0.0"
+        "hunt": "~>1.1.0-beta.1"
     },
     "configurations":[
         {
             "targetName": "hunt-console",
             "name": "hunt-console",
-            "targetType": "executable",
             "importPaths":["source"]
         },
         {
