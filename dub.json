@@ -2,10 +2,10 @@
     "name": "hunt-console",
     "description": "The Console component allows you to create command-line commands.",
     "copyright": "Copyright (C) 2015-2018, HuntLabs",
-    "homepage": "https://www.huntlabs.net/",
+    "homepage": "https://www.huntlabs.net",
     "license": "Apache-2.0",
     "dependencies": {
-        "hunt": "~>1.1.0-beta.1"
+        "hunt": "~>1.1.0"
     },
     "configurations":[
         {
@@ -14,13 +14,12 @@
             "importPaths":["source"]
         },
         {
-			"name": "unittest",
+            "name": "unittest",
             "targetType": "executable",
-			"targetName": "console-test",
-			"excludedSourceFiles": ["source/app.d"],
-			"sourcePaths": ["test/"],
-			"importPaths": ["test/"]
-		}
+            "targetName": "console-test",
+            "excludedSourceFiles": ["source/app.d"],
+            "sourcePaths": ["test/"],
+            "importPaths": ["test/"]
+        }
     ]
-
 }
