@@ -8,7 +8,7 @@
  * Licensed under the Apache-2.0 License.
  *
  */
- 
+
 module hunt.console.Application;
 
 import hunt.console.command;
@@ -75,6 +75,7 @@ class Application
 
     public int run(string[] args)
     {
+        args = args.length > 1 ? args[1..$] : [] ;
         return run(new ArgvInput(args), new SystemOutput());
     }
 
@@ -376,7 +377,7 @@ class Application
                 temp.add(parts.get(i));
             }
             parts = temp;
-            
+
         }
         string[] res;
         foreach(value; parts) {

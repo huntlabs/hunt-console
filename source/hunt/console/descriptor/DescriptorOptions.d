@@ -8,7 +8,7 @@
  * Licensed under the Apache-2.0 License.
  *
  */
- 
+
 module hunt.console.descriptor.DescriptorOptions;
 
 import hunt.collection.HashMap;
@@ -53,5 +53,10 @@ class DescriptorOptions : Cloneable
     public bool has(string name)
     {
         return _options.containsKey(name);
+    }
+
+    public Object clone()
+    {
+      return cast(Object)_options;
     }
 }

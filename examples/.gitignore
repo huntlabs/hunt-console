@@ -14,3 +14,4 @@ example
 *.obj
 *.lst
 dub.selections.json
+/example.iml

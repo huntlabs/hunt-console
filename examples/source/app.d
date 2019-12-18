@@ -15,7 +15,7 @@ void main(string[] args)
         override public int execute(Input input, Output output)
         {
             ProgressBar bar = new ProgressBar(output, 500);
-            
+
             for (int i = 0; i < 500; i++)
             {
                 bar.advance();
@@ -29,9 +29,5 @@ void main(string[] args)
             return 0;
         }
     }));
-    // logInfo("run args: ",args);
-    if(args.length > 1)
-        app.run(args[1..$]);
-    else
-        app.run([]);
+    app.run(args);
 }

@@ -14,3 +14,6 @@ console-test
 *.o
 *.obj
 *.lst
+.idea
+/libhunt-console.a
+/dub.selections.json

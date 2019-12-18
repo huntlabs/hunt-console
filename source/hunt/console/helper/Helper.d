@@ -8,7 +8,7 @@
  * Licensed under the Apache-2.0 License.
  *
  */
- 
+
 module hunt.console.helper.Helper;
 
 import hunt.console.helper.HelperSet;
