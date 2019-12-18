@@ -33,10 +33,7 @@ void main(string[] args)
         }
     }));
     
-    if(args.length > 1)
-        app.run(args[1..$]);
-    else
-        app.run([]);
+    app.run(args);
 }
    ```
 
