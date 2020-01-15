@@ -14,7 +14,7 @@ module hunt.console.command.Command;
 import std.string;
 import std.regex;
 
-import hunt.console.Application;
+import hunt.console.Console;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
 import hunt.console.helper.Helper;
@@ -33,7 +33,7 @@ import hunt.logging;
 
 class Command
 {
-    private Application application;
+    private Console application;
     private string name;
     private string[] aliases;
     private InputDefinition definition;
@@ -71,7 +71,7 @@ class Command
         _ignoreValidationErrors = true;
     }
 
-    public void setApplication(Application application)
+    public void setConsole(Console application)
     {
         this.application = application;
         if (application is null) {
@@ -81,7 +81,7 @@ class Command
         }
     }
 
-    public Application getApplication()
+    public Console getConsole()
     {
         return application;
     }
@@ -157,7 +157,7 @@ class Command
         // force the creation of the synopsis before the merge with the app definition
         getSynopsis();
 
-        mergeApplicationDefinition();
+        mergeConsoleDefinition();
 
         try {
             input.bind(definition);
@@ -192,12 +192,12 @@ class Command
         return this;
     }
 
-    public void mergeApplicationDefinition()
+    public void mergeConsoleDefinition()
     {
-        mergeApplicationDefinition(true);
+        mergeConsoleDefinition(true);
     }
 
-    public void mergeApplicationDefinition(bool mergeArgs)
+    public void mergeConsoleDefinition(bool mergeArgs)
     {
         if (application is null || (applicationDefinitionMerged && (applicationDefinitionMergedWithArgs || !mergeArgs))) {
             return;

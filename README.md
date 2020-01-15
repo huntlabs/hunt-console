@@ -5,12 +5,12 @@ Console eases the creation of beautiful and testable command line interfaces.
 
 It is a port from [Symfony's Console component](https://github.com/symfony/Console).
 
-The Application object manages the command-line application:
+The Console object manages the command-line application:
 
-    import hunt.console;
+import hunt.console;
 
-    console = new Application();
-    console.run(new ArgsInput(args));
+console = new Console();
+console.run(new ArgsInput(args));
 
 The ``run()`` method parses the arguments and options passed on the command
 line and executes the right command.
@@ -18,10 +18,10 @@ line and executes the right command.
 Registering a new command can easily be done via the ``register()`` method,
 which returns a ``Command`` instance:
 
-   ```D
+```D
 void main(string[] args)
 {
-    Application app = new Application("Hunt Console", "1.0.0");
+    Console app = new Console("Hunt Console", "1.0.0");
     app.setAutoExit(false);
     app.add(new GreetingCommand());
 
@@ -35,7 +35,7 @@ void main(string[] args)
     
     app.run(args);
 }
-   ```
+```
 
 You can also register new commands via classes.
 

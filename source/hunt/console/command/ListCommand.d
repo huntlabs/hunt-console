@@ -58,7 +58,7 @@ class ListCommand : Command
         }
 
         DescriptorHelper helper = new DescriptorHelper();
-        helper.describe(output, getApplication(), (new DescriptorOptions())
+        helper.describe(output, getConsole(), (new DescriptorOptions())
                 .set("format", input.getOption("format"))
                 .set("raw_text", input.getOption("raw"))
                 .set("namespace", input.getArgument("namespace"))

@@ -1,6 +1,6 @@
 module test.command.CommandTest;
 
-import hunt.console.Application;
+import hunt.console.Console;
 import hunt.console.command;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.error.LogicException;
@@ -23,11 +23,11 @@ unittest
 
 unittest
 {
-    Application application = new Application();
+    Console application = new Console();
     Command command = new TestCommand();
-    command.setApplication(application);
-    assertEqual("setApplication() sets the current application", application,
-            command.getApplication());
+    command.setConsole(application);
+    assertEqual("setConsole() sets the current application", application,
+            command.getConsole());
 }
 
 unittest
@@ -110,9 +110,9 @@ unittest
 
 unittest
 {
-    Application application = new Application();
+    Console application = new Console();
     Command command = new TestCommand();
-    command.setApplication(application);
+    command.setConsole(application);
     QuestionHelper helper = new QuestionHelper();
     assertEqual("getHelper() returns the correct helper", helper.getName(),
             command.getHelper("question").getName());
@@ -120,7 +120,7 @@ unittest
 
 unittest
 {
-    Application application = new Application();
+    Console application = new Console();
     application.getDefinition().addArgument(new InputArgument("foo"));
     application.getDefinition().addOption(new InputOption("bar"));
 
@@ -129,40 +129,40 @@ unittest
     definition.addOption(new InputOption("foo"));
 
     Command command = new TestCommand();
-    command.setApplication(application);
+    command.setConsole(application);
     command.setDefinition(definition);
 
-    command.mergeApplicationDefinition();
-    assertTrue("mergeApplicationDefinition() merges the application arguments and the command arguments",
+    command.mergeConsoleDefinition();
+    assertTrue("mergeConsoleDefinition() merges the application arguments and the command arguments",
             command.getDefinition().hasArgument("foo"));
-    assertTrue("mergeApplicationDefinition() merges the application arguments and the command arguments",
+    assertTrue("mergeConsoleDefinition() merges the application arguments and the command arguments",
             command.getDefinition().hasArgument("bar"));
-    assertTrue("mergeApplicationDefinition() merges the application options and the command options",
+    assertTrue("mergeConsoleDefinition() merges the application options and the command options",
             command.getDefinition().hasOption("foo"));
-    assertTrue("mergeApplicationDefinition() merges the application options and the command options",
+    assertTrue("mergeConsoleDefinition() merges the application options and the command options",
             command.getDefinition().hasOption("bar"));
 
-    command.mergeApplicationDefinition();
-    assertEqual("mergeApplicationDefinition() does not try to merge twice the application arguments and options",
+    command.mergeConsoleDefinition();
+    assertEqual("mergeConsoleDefinition() does not try to merge twice the application arguments and options",
             3, command.getDefinition().getArgumentCount());
 }
 
 unittest
 {
-    Application application = new Application();
+    Console application = new Console();
     application.getDefinition().addArgument(new InputArgument("foo"));
     application.getDefinition().addOption(new InputOption("bar"));
 
     Command command = new TestCommand();
-    command.setApplication(application);
+    command.setConsole(application);
     command.setDefinition(new InputDefinition());
 
-    command.mergeApplicationDefinition(false);
+    command.mergeConsoleDefinition(false);
     assertFalse(
-            "mergeApplicationDefinition(false) does not merge the application arguments and the command arguments",
+            "mergeConsoleDefinition(false) does not merge the application arguments and the command arguments",
             command.getDefinition().hasArgument("foo"));
 
-    command.mergeApplicationDefinition(true);
-    assertTrue("mergeApplicationDefinition(true) merges the application arguments and the command arguments",
+    command.mergeConsoleDefinition(true);
+    assertTrue("mergeConsoleDefinition(true) merges the application arguments and the command arguments",
             command.getDefinition().hasArgument("foo"));
 }

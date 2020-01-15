@@ -13,7 +13,7 @@ module hunt.console.descriptor.AbstractDescriptor;
 
 import std.string;
 
-import hunt.console.Application;
+import hunt.console.Console;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
 import hunt.console.input.InputArgument;
@@ -45,8 +45,8 @@ public abstract class AbstractDescriptor : Descriptor
             describeInputDefinition(cast(InputDefinition) object, options);
         } else if (cast(Command)object !is null) {
             describeCommand(cast(Command) object, options);
-        } else if (cast(Application)object !is null) {
-            describeApplication(cast(Application) object, options);
+        } else if (cast(Console)object !is null) {
+            describeConsole(cast(Console) object, options);
         } else {
             throw new InvalidArgumentException(format("Object of type '%s' is not describable.", typeid(object).name));
         }
@@ -70,5 +70,5 @@ public abstract class AbstractDescriptor : Descriptor
 
     protected abstract void describeCommand(Command command, DescriptorOptions options);
 
-    protected abstract void describeApplication(Application application, DescriptorOptions options);
+    protected abstract void describeConsole(Console application, DescriptorOptions options);
 }

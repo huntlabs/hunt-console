@@ -9,14 +9,14 @@
  *
  */
  
-module hunt.console.descriptor.ApplicationDescription;
+module hunt.console.descriptor.ConsoleDescription;
 
 import std.string;
 
-import hunt.console.Application;
+import hunt.console.Console;
 import hunt.console.error.InvalidArgumentException;
 import hunt.console.command.Command;
-import hunt.console.descriptor.ApplicationDescription;
+import hunt.console.descriptor.ConsoleDescription;
 
 import hunt.collection.ArrayList;
 import hunt.collection.HashMap;
@@ -24,11 +24,11 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.Integer;
 
-class ApplicationDescription
+class ConsoleDescription
 {
     public static string GLOBAL_NAMESPACE = "_global";
 
-    private  Application application;
+    private  Console application;
 
     private  string namespace;
 
@@ -38,12 +38,12 @@ class ApplicationDescription
 
     private Map!(string, Command) aliases;
 
-    public this(Application application)
+    public this(Console application)
     {
         this(application, null);
     }
 
-    public this(Application application, string namespace)
+    public this(Console application, string namespace)
     {
         this.application = application;
         this.namespace = namespace;
@@ -52,7 +52,7 @@ class ApplicationDescription
     public Map!(string, List!(string)) getNamespaces()
     {
         if (namespaces is null) {
-            inspectApplication();
+            inspectConsole();
         }
 
         return namespaces;
@@ -61,7 +61,7 @@ class ApplicationDescription
     public Map!(string, Command) getCommands()
     {
         if (commands is null) {
-            inspectApplication();
+            inspectConsole();
         }
 
         return commands;
@@ -80,7 +80,7 @@ class ApplicationDescription
         return aliases.get(name);
     }
 
-    private void inspectApplication()
+    private void inspectConsole()
     {
         commands = new HashMap!(string, Command)();
         aliases = new HashMap!(string, Command)();

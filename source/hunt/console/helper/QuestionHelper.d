@@ -17,10 +17,10 @@ import hunt.console.question.ChoiceQuestion;
 import hunt.console.question.Question;
 import hunt.console.helper.AbstractHelper;
 
-import hunt.io.Common;
-// import hunt.collection.Scanner;
 import hunt.Exceptions;
+import hunt.io.Common;
 import hunt.io.FileInputStream;
+
 import std.stdio;
 
 class QuestionHelper : AbstractHelper
@@ -48,17 +48,11 @@ class QuestionHelper : AbstractHelper
         output.writeln(message);
 
         string answer;
+
         if (question.isHidden()) {
-            // Console console = System.console();
-            // if (console is null) {
-            //     throw new RuntimeException("Unable to hide input (console not available)");
-            // }
-            // answer = to!string(console.readPassword());
             implementationMissing();
         } else {
             implementationMissing();
-            // Scanner scanner = new Scanner(inputStream);
-            // answer = scanner.next();
         }
 
         if (answer is null || answer.length == 0) {

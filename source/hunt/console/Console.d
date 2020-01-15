@@ -9,7 +9,7 @@
  *
  */
 
-module hunt.console.Application;
+module hunt.console.Console;
 
 import hunt.console.command;
 import hunt.console.error.InvalidArgumentException;
@@ -35,11 +35,7 @@ import std.string;
 import hunt.text.StringBuilder;
 import hunt.Integer;
 
-// import hunt.io.BufferedReader;
-// import hunt.io.InputStreamReader;
-
-
-class Application
+class Console
 {
     private Map!(string, Command) _commands;
     private bool _wantHelps;
@@ -309,20 +305,23 @@ class Application
      */
     public Command add(Command command)
     {
-        command.setApplication(this);
+        command.setConsole(this);
 
-        if (!command.isEnabled()) {
-            command.setApplication(null);
+        if (!command.isEnabled())
+        {
+            command.setConsole(null);
             return null;
         }
 
-        if (command.getDefinition() is null) {
+        if (command.getDefinition() is null)
+        {
             throw new LogicException(format("Command class '%s' is not correctly initialized. You probably forgot to call the super constructor.", typeid(command).name));
         }
 
         _commands.put(command.getName(), command);
 
-        foreach (string a ; command.getAliases()) {
+        foreach (string a ; command.getAliases())
+        {
             _commands.put(a, command);
         }
 
@@ -360,41 +359,51 @@ class Application
     public string extractNamespace(string name, Integer limit)
     {
         List!(string) parts = new ArrayList!(string)();
-       foreach(value; name.split(":")) {
-           parts.add(value);
-       }
+
+        foreach(value; name.split(":"))
+        {
+            parts.add(value);
+        }
+
         parts.removeAt(parts.size() - 1);
 
-        if (parts.size() == 0) {
+        if (parts.size() == 0)
+        {
             return null;
         }
 
-        if (limit !is null && parts.size() > limit.intValue()) {
+        if (limit !is null && parts.size() > limit.intValue())
+        {
             // parts = parts.subList(0, limit);
             List!(string) temp = new ArrayList!(string)();
-            for(int i = 0 ; i< limit.intValue();i++)
+            for(int i = 0 ; i < limit.intValue(); i++)
             {
                 temp.add(parts.get(i));
             }
-            parts = temp;
 
+            parts = temp;
         }
+
         string[] res;
-        foreach(value; parts) {
+        foreach(value; parts)
+        {
             res ~= value;
         }
+
         return StringUtils.join(res, ":");
     }
 
     public Command get(string name)
     {
-        if (!_commands.containsKey(name)) {
+        if (!_commands.containsKey(name))
+        {
             throw new InvalidArgumentException(format("The command '%s' does not exist.", name));
         }
 
         Command command = _commands.get(name);
 
-        if (_wantHelps) {
+        if (_wantHelps)
+        {
             _wantHelps = false;
 
             HelpCommand helpCommand = cast(HelpCommand) get("help");
@@ -416,12 +425,17 @@ class Application
         Set!(string) namespaces = new HashSet!(string)();
 
         string namespace;
-        foreach (Command command ; _commands.values()) {
+        foreach (Command command ; _commands.values())
+        {
             namespace = extractNamespace(command.getName());
-            if (namespace !is null) {
+
+            if (namespace !is null)
+            {
                 namespaces.add(namespace);
             }
-            foreach (string a ; command.getAliases()) {
+
+            foreach (string a ; command.getAliases())
+            {
                 extractNamespace(a);
                 if (namespace !is null) {
                     namespaces.add(namespace);
@@ -430,7 +444,8 @@ class Application
         }
 
         string[] res;
-        foreach(value; namespaces) {
+        foreach(value; namespaces)
+        {
             res ~= value;
         }
 
@@ -489,8 +504,6 @@ class Application
         if (_terminalDimensions !is null) {
             return _terminalDimensions;
         }
-
-//        string sttystring = getSttyColumns();
 
         return [80, 120];
     }

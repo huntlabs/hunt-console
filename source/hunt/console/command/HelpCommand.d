@@ -58,7 +58,7 @@ class HelpCommand : Command
     override protected int execute(Input input, Output output)
     {
         if (command is null) {
-            command = getApplication().find(input.getArgument("command_name"));
+            command = getConsole().find(input.getArgument("command_name"));
         }
 
         if (input.getOption("xml") !is null) {

@@ -13,7 +13,7 @@ module hunt.console.descriptor.MarkdownDescriptor;
 
 import std.string;
 
-import hunt.console.Application;
+import hunt.console.Console;
 import hunt.console.command.Command;
 import hunt.console.input.InputArgument;
 import hunt.console.input.InputDefinition;
@@ -24,7 +24,7 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.console.descriptor.AbstractDescriptor;
 import hunt.console.descriptor.DescriptorOptions;
-import hunt.console.descriptor.ApplicationDescription;
+import hunt.console.descriptor.ConsoleDescription;
 
 class MarkdownDescriptor : AbstractDescriptor
 {
@@ -80,7 +80,7 @@ class MarkdownDescriptor : AbstractDescriptor
     override protected void describeCommand(Command command, DescriptorOptions options)
     {
         command.getSynopsis();
-        command.mergeApplicationDefinition(false);
+        command.mergeConsoleDefinition(false);
 
         write(
                 command.getName() ~ "\n" ~
@@ -103,16 +103,16 @@ class MarkdownDescriptor : AbstractDescriptor
         }
     }
 
-    override protected void describeApplication(Application application, DescriptorOptions options)
+    override protected void describeConsole(Console application, DescriptorOptions options)
     {
         string describedNamespace = options.has("namespace") ? options.get("namespace") : null;
-        ApplicationDescription description = new ApplicationDescription(application, describedNamespace);
+        ConsoleDescription description = new ConsoleDescription(application, describedNamespace);
 
         write(application.getName() ~ "\n" ~ StringUtils.repeat("=", application.getName().length));
 
         foreach (string k ,List!(string) v ; description.getNamespaces()) {
             string namespace = k;
-            if (!(namespace == ApplicationDescription.GLOBAL_NAMESPACE)) {
+            if (!(namespace == ConsoleDescription.GLOBAL_NAMESPACE)) {
                 write("\n\n");
                 write("**" ~ namespace ~ ":**");
             }

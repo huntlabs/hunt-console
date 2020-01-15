@@ -13,7 +13,7 @@ module hunt.console.descriptor.TextDescriptor;
 
 import std.string;
 import std.conv;
-import hunt.console.Application;
+import hunt.console.Console;
 import hunt.console.command.Command;
 import hunt.console.input.InputArgument;
 import hunt.console.input.InputDefinition;
@@ -27,7 +27,7 @@ import hunt.Integer;
 import hunt.Boolean;
 import hunt.console.descriptor.AbstractDescriptor;
 import hunt.console.descriptor.DescriptorOptions;
-import hunt.console.descriptor.ApplicationDescription;
+import hunt.console.descriptor.ConsoleDescription;
 
 class TextDescriptor : AbstractDescriptor
 {
@@ -107,7 +107,7 @@ class TextDescriptor : AbstractDescriptor
     override protected void describeCommand(Command command, DescriptorOptions options)
     {
         command.getSynopsis();
-        command.mergeApplicationDefinition();
+        command.mergeConsoleDefinition();
 
         writeText("<comment>Usage:</comment>", options);
         writeNewline();
@@ -136,10 +136,10 @@ class TextDescriptor : AbstractDescriptor
         }
     }
 
-    override protected void describeApplication(Application application, DescriptorOptions options)
+    override protected void describeConsole(Console application, DescriptorOptions options)
     {
         string describedNamespace = options.has("namespace") ? options.get("namespace") : null;
-        ApplicationDescription description = new ApplicationDescription(application, describedNamespace);
+        ConsoleDescription description = new ConsoleDescription(application, describedNamespace);
 
         int width = getColumnWidth(description.getCommands());
 
@@ -161,7 +161,7 @@ class TextDescriptor : AbstractDescriptor
             // add commands by namespace
             foreach (string k,List!(string) v ; description.getNamespaces()) {
 
-                if (describedNamespace is null && !(ApplicationDescription.GLOBAL_NAMESPACE == k)) {
+                if (describedNamespace is null && !(ConsoleDescription.GLOBAL_NAMESPACE == k)) {
                     writeNewline();
                     writeText("<comment>" ~ k ~ "</comment>", options);
                 }
