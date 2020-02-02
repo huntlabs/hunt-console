@@ -30,10 +30,12 @@ import hunt.collection.ArrayList;
 import hunt.collection.Set;
 import hunt.collection.HashSet;
 import hunt.Exceptions;
-import core.stdc.stdlib;
-import std.string;
+import hunt.logging.ConsoleLogger;
 import hunt.text.StringBuilder;
 import hunt.Integer;
+
+import core.stdc.stdlib;
+import std.string;
 
 class Console
 {
@@ -84,8 +86,18 @@ class Console
         try {
             exitCode = doRun(input, output);
         } catch (Exception e) {
+            warning(e.msg);
+            // if(e.next !is null) {
+            //     warning(e.next);
+            // }
+            version(HUNT_DEBUG) warning(e);
+            
             if (!_catchExceptions) {
-                throw new RuntimeException(e);
+                RuntimeException re = cast(RuntimeException)e;
+                if(re is null)
+                    throw new RuntimeException(e);
+                else
+                    throw e;
             }
 
             if (cast(ConsoleOutput)output !is null) {
@@ -175,6 +187,8 @@ class Console
         try {
             exitCode = command.run(input, output);
         } catch (Exception e) {
+            warning(e.msg);
+            // version(HUNT_DEBUG) warning(e);
             // todo events
             throw new RuntimeException(e);
         }
