@@ -16,27 +16,27 @@ import hunt.console.output.OutputType;
 import hunt.console.output.Verbosity;
 import hunt.console.formatter.OutputFormatter;
 
-public interface Output
+interface Output
 {
-    public void write(string message);
+    void write(string message);
 
-    public void write(string message, bool newline);
+    void write(string message, bool newline);
 
-    public void write(string message, bool newline, OutputType type);
+    void write(string message, bool newline, OutputType type);
 
-    public void writeln(string message);
+    void writeln(string message);
 
-    public void writeln(string message, OutputType type);
+    void writeln(string message, OutputType type);
 
-    public void setVerbosity(Verbosity verbosity);
+    void setVerbosity(Verbosity verbosity);
 
-    public Verbosity getVerbosity();
+    Verbosity getVerbosity();
 
-    public void setDecorated(bool decorated);
+    void setDecorated(bool decorated);
 
-    public bool isDecorated();
+    bool isDecorated();
 
-    public void setFormatter(OutputFormatter formatter);
+    void setFormatter(OutputFormatter formatter);
 
-    public OutputFormatter getFormatter();
+    OutputFormatter getFormatter();
 }

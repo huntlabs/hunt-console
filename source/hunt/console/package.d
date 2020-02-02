@@ -25,5 +25,6 @@ module hunt.console;
 public import hunt.console.Console;
 public import hunt.console.command;
 public import hunt.console.input;
+public import hunt.console.helper;
+public import hunt.console.question;
 public import hunt.console.output;
-public import hunt.console.helper.ProgressBar;

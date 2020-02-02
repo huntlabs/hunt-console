@@ -31,6 +31,8 @@ import hunt.Exceptions;
 import hunt.console.command.CommandExecutor;
 import hunt.logging;
 
+import std.range;
+
 class Command
 {
     private Console application;
@@ -46,12 +48,12 @@ class Command
     private HelperSet helperSet;
     private CommandExecutor executor;
 
-    public this()
+    this()
     {
         this(null);
     }
 
-    public this(string name)
+    this(string name)
     {
         definition = new InputDefinition();
 
@@ -61,17 +63,17 @@ class Command
 
         configure();
 
-        if (this.name is null || this.name.length == 0) {
+        if (this.name.empty) {
             throw new LogicException(format("The command defined in '%s' cannot have an empty name.", typeid(this).name));
         }
     }
 
-    public void ignoreValidationErrors()
+    void ignoreValidationErrors()
     {
         _ignoreValidationErrors = true;
     }
 
-    public void setConsole(Console application)
+    void setConsole(Console application)
     {
         this.application = application;
         if (application is null) {
@@ -81,22 +83,22 @@ class Command
         }
     }
 
-    public Console getConsole()
+    Console getConsole()
     {
         return application;
     }
 
-    public HelperSet getHelperSet()
+    HelperSet getHelperSet()
     {
         return helperSet;
     }
 
-    public void setHelperSet(HelperSet helperSet)
+    void setHelperSet(HelperSet helperSet)
     {
         this.helperSet = helperSet;
     }
 
-    public Helper getHelper(string name)
+    Helper getHelper(string name)
     {
         return helperSet.get(name);
     }
@@ -107,7 +109,7 @@ class Command
      * Override this to check for x or y and return false if the command can not
      * run properly under the current conditions.
      */
-    public bool isEnabled()
+    bool isEnabled()
     {
         return true;
     }
@@ -152,7 +154,7 @@ class Command
     /**
      * Runs the command.
      */
-    public int run(Input input, Output output)
+    int run(Input input, Output output)
     {
         // force the creation of the synopsis before the merge with the app definition
         getSynopsis();
@@ -185,19 +187,19 @@ class Command
         return statusCode;
     }
 
-    public Command setExecutor(CommandExecutor executor)
+    Command setExecutor(CommandExecutor executor)
     {
         this.executor = executor;
 
         return this;
     }
 
-    public void mergeConsoleDefinition()
+    void mergeConsoleDefinition()
     {
         mergeConsoleDefinition(true);
     }
 
-    public void mergeConsoleDefinition(bool mergeArgs)
+    void mergeConsoleDefinition(bool mergeArgs)
     {
         if (application is null || (applicationDefinitionMerged && (applicationDefinitionMergedWithArgs || !mergeArgs))) {
             return;
@@ -217,7 +219,7 @@ class Command
         }
     }
 
-    public Command setDefinition(InputDefinition definition)
+    Command setDefinition(InputDefinition definition)
     {
         this.definition = definition;
 
@@ -226,80 +228,80 @@ class Command
         return this;
     }
 
-    public InputDefinition getDefinition()
+    InputDefinition getDefinition()
     {
         return definition;
     }
 
-    public InputDefinition getNativeDefinition()
+    InputDefinition getNativeDefinition()
     {
         return getDefinition();
     }
 
-    public Command addArgument(string name)
+    Command addArgument(string name)
     {
         definition.addArgument(new InputArgument(name));
 
         return this;
     }
 
-    public Command addArgument(string name, int mode)
+    Command addArgument(string name, int mode)
     {
         definition.addArgument(new InputArgument(name, mode));
 
         return this;
     }
 
-    public Command addArgument(string name, int mode, string description)
+    Command addArgument(string name, int mode, string description)
     {
         definition.addArgument(new InputArgument(name, mode, description));
 
         return this;
     }
 
-    public Command addArgument(string name, int mode, string description, string defaultValue)
+    Command addArgument(string name, int mode, string description, string defaultValue)
     {
         definition.addArgument(new InputArgument(name, mode, description, defaultValue));
 
         return this;
     }
 
-    public Command addOption(string name)
+    Command addOption(string name)
     {
         definition.addOption(new InputOption(name));
 
         return this;
     }
 
-    public Command addOption(string name, string shortcut)
+    Command addOption(string name, string shortcut)
     {
         definition.addOption(new InputOption(name, shortcut));
 
         return this;
     }
 
-    public Command addOption(string name, string shortcut, int mode)
+    Command addOption(string name, string shortcut, int mode)
     {
         definition.addOption(new InputOption(name, shortcut, mode));
 
         return this;
     }
 
-    public Command addOption(string name, string shortcut, int mode, string description)
+    Command addOption(string name, string shortcut, int mode, string description)
     {
         definition.addOption(new InputOption(name, shortcut, mode, description));
 
         return this;
     }
 
-    public Command addOption(string name, string shortcut, int mode, string description, string defaultValue)
+    Command addOption(string name, string shortcut, int mode, string description, string defaultValue)
     {
         definition.addOption(new InputOption(name, shortcut, mode, description, defaultValue));
 
         return this;
     }
 
-    public Command setName(string name)
+    Command setName(string name)
     {
         validateName(name);
 
@@ -308,36 +310,36 @@ class Command
         return this;
     }
 
-    public string getName()
+    string getName()
     {
         return name;
     }
 
-    public Command setDescription(string description)
+    Command setDescription(string description)
     {
         this.description = description;
 
         return this;
     }
 
-    public string getDescription()
+    string getDescription()
     {
         return description;
     }
 
-    public Command setHelp(string help)
+    Command setHelp(string help)
     {
         this.help = help;
 
         return this;
     }
 
-    public string getHelp()
+    string getHelp()
     {
         return help;
     }
 
-    public string getProcessedHelp()
+    string getProcessedHelp()
     {
         string help = getHelp();
         if (help is null) {
@@ -349,7 +351,7 @@ class Command
         return help;
     }
 
-    public Command setAliases(string[] aliases...)
+    Command setAliases(string[] aliases...)
     {
         foreach (a ; aliases) {
             validateName(a);
@@ -360,12 +362,12 @@ class Command
         return this;
     }
 
-    public string[] getAliases()
+    string[] getAliases()
     {
         return aliases;
     }
 
-    public string getSynopsis()
+    string getSynopsis()
     {
         if (synopsis is null) {
             synopsis = format("%s %s", name, definition.getSynopsis()).strip();

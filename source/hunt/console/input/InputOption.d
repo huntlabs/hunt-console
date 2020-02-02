@@ -21,10 +21,10 @@ import std.conv;
 
 class InputOption
 {
-    public static int VALUE_NONE = 1;
-    public static int VALUE_REQUIRED = 2;
-    public static int VALUE_OPTIONAL = 4;
-    public static int VALUE_IS_ARRAY = 8;
+    enum int VALUE_NONE = 1;
+    enum int VALUE_REQUIRED = 2;
+    enum int VALUE_OPTIONAL = 4;
+    enum int VALUE_IS_ARRAY = 8;
 
     private string name;
     private string shortcut;
