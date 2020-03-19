@@ -78,7 +78,7 @@ class ProgressBar
 
         setFormat(determineBestFormat());
 
-        startTime = DateTimeHelper.currentTimeMillis();
+        startTime = DateTime.currentTimeMillis();
     }
 
     public static void setPlaceholderFormatter(string name, PlaceholderFormatter formatter)
@@ -232,7 +232,7 @@ class ProgressBar
 
     public void start(int max)
     {
-        startTime = DateTimeHelper.currentTimeMillis();
+        startTime = DateTime.currentTimeMillis();
         step = 0;
         percent = 0f;
 
@@ -425,7 +425,7 @@ class ProgressBar
             override public string format(ProgressBar bar, Output output)
             {
                 import std.math;
-                return AbstractHelper.formatTime(cast(long)/* MathHelper. */round(( DateTimeHelper.currentTimeMillis() / 1000) - (bar.getStartTime() / 1000)));
+                return AbstractHelper.formatTime(cast(long)/* MathHelper. */round(( DateTime.currentTimeMillis() / 1000) - (bar.getStartTime() / 1000)));
             }
         });
 
@@ -442,7 +442,7 @@ class ProgressBar
                     remaining = 0;
                 } else {
                     import std.math;
-                    remaining = /* MathHelper. */cast(long)round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * (cast(float) bar.getMaxSteps() - cast(float) bar.getProgress()));
+                    remaining = /* MathHelper. */cast(long)round(cast(float) ( DateTime.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * (cast(float) bar.getMaxSteps() - cast(float) bar.getProgress()));
                 }
 
                 return AbstractHelper.formatTime(remaining);
@@ -462,7 +462,7 @@ class ProgressBar
                     estimated = 0;
                 } else {
                     import std.math;
-                    estimated =/*  MathHelper. */cast(long)round(cast(float) ( DateTimeHelper.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * cast(float) bar.getMaxSteps());
+                    estimated =/*  MathHelper. */cast(long)round(cast(float) ( DateTime.currentTimeMillis() / 1000 - bar.getStartTime() / 1000) / cast(float) bar.getProgress() * cast(float) bar.getMaxSteps());
                 }
 
                 return AbstractHelper.formatTime(estimated);
