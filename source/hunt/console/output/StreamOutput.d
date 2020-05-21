@@ -13,8 +13,8 @@ module hunt.console.output.StreamOutput;
 
 import hunt.console.formatter.OutputFormatter;
 
-import hunt.io.Common;
-import hunt.io.FileOutputStream;
+import hunt.stream.Common;
+import hunt.stream.FileOutputStream;
 // import hunt.io.PrintWriter;
 import hunt.console.output.AbstractOutput;
 import hunt.console.output.Verbosity;

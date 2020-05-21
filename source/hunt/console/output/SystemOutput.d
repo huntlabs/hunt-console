@@ -13,7 +13,7 @@ module hunt.console.output.SystemOutput;
 
 import hunt.console.formatter.OutputFormatter;
 import std.stdio;
-import hunt.io.FileOutputStream;
+import hunt.stream.FileOutputStream;
 import hunt.console.output.StreamOutput;
 import hunt.console.output.Verbosity;
 import hunt.console.output.Output;

@@ -19,11 +19,11 @@ import hunt.console.formatter.OutputFormatter;
 import hunt.console.formatter.OutputFormatterStyle;
 import hunt.console.formatter.OutputFormatterStyleStack;
 import hunt.console.formatter.DefaultOutputFormatterStyle;
-import hunt.text.StringBuilder;
 import hunt.text.Common;
 import hunt.logging;
 import std.regex;
 import std.string;
+import hunt.util.StringBuilder;
 
 class DefaultOutputFormatter : OutputFormatter
 {

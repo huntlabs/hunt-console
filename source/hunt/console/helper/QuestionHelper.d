@@ -18,8 +18,8 @@ import hunt.console.question.Question;
 import hunt.console.helper.AbstractHelper;
 
 import hunt.Exceptions;
-import hunt.io.Common;
-import hunt.io.FileInputStream;
+import hunt.stream.Common;
+import hunt.stream.FileInputStream;
 
 import std.stdio;
 

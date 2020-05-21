@@ -22,7 +22,7 @@ import hunt.console.output;
 import hunt.console.util.StringUtils;
 import hunt.console.util.ThrowableUtils;
 
-import hunt.io.Common;
+import hunt.stream.Common;
 import hunt.collection.Map;
 import hunt.collection.HashMap;
 import hunt.collection.List;
@@ -31,11 +31,11 @@ import hunt.collection.Set;
 import hunt.collection.HashSet;
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
-import hunt.text.StringBuilder;
 import hunt.Integer;
 
 import core.stdc.stdlib;
 import std.string;
+import hunt.util.StringBuilder;
 
 class Console
 {

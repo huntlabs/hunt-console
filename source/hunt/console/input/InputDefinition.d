@@ -22,7 +22,7 @@ import hunt.console.input.InputOption;
 import hunt.collection.Collection;
 import hunt.collection.List;
 import hunt.collection.ArrayList;
-import hunt.text.StringBuilder;
+import hunt.util.StringBuilder;
 import hunt.Integer;
 import std.string;
 

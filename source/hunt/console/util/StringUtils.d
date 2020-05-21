@@ -11,10 +11,10 @@
  
 module hunt.console.util.StringUtils;
 
-import hunt.text.StringBuilder;
 import std.string;
 import std.conv;
 import hunt.text.Common;
+import hunt.util.StringBuilder;
 
 alias Character = char;
 class StringUtils

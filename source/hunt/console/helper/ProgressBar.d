@@ -21,8 +21,6 @@ import hunt.collection.HashMap;
 import hunt.collection.Map;
 import hunt.console.helper.PlaceholderFormatter;
 import hunt.util.DateTime;
-import hunt.text.StringBuilder;
-import hunt.collection.StringBuffer;
 import hunt.math.Helper;
 import hunt.console.helper.AbstractHelper;
 import hunt.console.output.Verbosity;
@@ -30,6 +28,7 @@ import hunt.console.output.Verbosity;
 import std.regex;
 import std.string;
 import std.conv;
+import hunt.util.StringBuilder;
 
 class ProgressBar
 {
@@ -307,7 +306,7 @@ class ProgressBar
 
         int startPos = 0;
         string text = "";
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         foreach(matcher ; matchers) {
             string format = matcher.captures[1];
             PlaceholderFormatter formatter = getPlaceholderFormatter(format);
