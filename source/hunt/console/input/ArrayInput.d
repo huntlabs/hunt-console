@@ -22,16 +22,20 @@ import hunt.console.input.AbstractInput;
 import hunt.console.input.InputDefinition;
 import hunt.text.Common;
 
+import hunt.Exceptions;
+import std.conv;
+
+
 class ArrayInput : AbstractInput
 {
     private Map!(string, string) parameters;
 
-    public this()
+    this()
     {
         this(new HashMap!(string, string)());
     }
 
-    public this(string[] nameValues...)
+    this(string[] nameValues...)
     {
         parameters = new LinkedHashMap!(string, string)();
         string name = null, value;
@@ -46,13 +50,13 @@ class ArrayInput : AbstractInput
         }
     }
 
-    public this(Map!(string, string) parameters)
+    this(Map!(string, string) parameters)
     {
         super();
         this.parameters = parameters;
     }
 
-    public this(Map!(string, string) parameters, InputDefinition definition)
+    this(Map!(string, string) parameters, InputDefinition definition)
     {
         super(definition);
         this.parameters = parameters;
@@ -111,7 +115,7 @@ class ArrayInput : AbstractInput
         arguments.put(name, value);
     }
 
-    /* override */ public string getFirstArgument()
+    override string getFirstArgument()
     {
         foreach (string k ,string v ; parameters) {
             if (k.startsWith("-")) {
@@ -123,8 +127,11 @@ class ArrayInput : AbstractInput
         return null;
     }
 
-    /* override */ public bool hasParameterOption(string[] values...)
+    override bool hasParameterOption(string[] values, bool onlyParams = false)
     {
+
+            implementationMissing(false);
+
         foreach (string k ,string v ; parameters) {
             foreach (string value ; values) {
                 if (k == value) {
@@ -136,19 +143,43 @@ class ArrayInput : AbstractInput
         return false;
     }
 
-    /* override */ public string getParameterOption(string value)
-    {
-        return getParameterOption(value, null);
-    }
+    // string getParameterOption(string value)
+    // {
+    //     return getParameterOption(value, null);
+    // }
 
-    /* override */ public string getParameterOption(string value, string defaultValue)
-    {
+    // string getParameterOption(string value, string defaultValue)
+    // {
+    //     foreach (string k , string v ; parameters) {
+    //         if (k == value) {
+    //             return v;
+    //         }
+    //     }
+
+    //     return defaultValue;
+    // }
+    override string getParameterOption(string[] values, string defaultValue, bool onlyParams = false) {
         foreach (string k , string v ; parameters) {
-            if (k == value) {
-                return v;
-            }
+            if(onlyParams && (k == "--" || (isInt(k) && v ==  "--")))
+                return defaultValue;
+
+            // if (k == value) {
+            //     return v;
+            // }
+            // TODO: Tasks pending completion -@zhangxueping at 2020-07-10T11:27:11+08:00
+            // 
+            implementationMissing(false);
         }
 
-        return defaultValue;
+        return defaultValue;        
+    }
+
+    static bool isInt(string value) {
+        try {
+            int v = to!int(value);
+            return true;
+        } catch(Throwable) {
+            return false;
+        }
     }
 }

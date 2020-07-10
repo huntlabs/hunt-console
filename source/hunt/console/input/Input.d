@@ -15,37 +15,50 @@ import hunt.console.error.InvalidArgumentException;
 import hunt.console.input.InputDefinition;
 
 
-public interface Input
+abstract class Input
 {
-    public string getFirstArgument();
+    string getFirstArgument();
 
-    public bool hasParameterOption(string[] values...);
+    bool hasParameterOption(string value, bool onlyParams = false) {
+        return hasParameterOption([value], onlyParams);
+    }
 
-    public string getParameterOption(string value);
+    bool hasParameterOption(string[] values, bool onlyParams = false);
 
-    public string getParameterOption(string value, string defaultValue);
+    string getParameterOption(string value, bool onlyParams = false) {
+        return getParameterOption([value], null, onlyParams);
+    }
 
-    public void bind(InputDefinition definition);
+    string getParameterOption(string value, string defaultValue, bool onlyParams = false) {
+        return getParameterOption([value], defaultValue, onlyParams);
+    }
 
-    public void validate() /* throws RuntimeException */;
+    string getParameterOption(string[] values, string defaultValue, bool onlyParams = false);
+    // string getParameterOption(string value);
 
-    public string[] getArguments();
+    // string getParameterOption(string value, string defaultValue);
 
-    public string getArgument(string name);
+    void bind(InputDefinition definition);
 
-    public void setArgument(string name, string value) /* throws InvalidArgumentException */;
+    void validate() /* throws RuntimeException */;
 
-    public bool hasArgument(string name);
+    string[] getArguments();
 
-    public string[] getOptions();
+    string getArgument(string name);
 
-    public string getOption(string name);
+    void setArgument(string name, string value) /* throws InvalidArgumentException */;
 
-    public void setOption(string name, string value) /* throws InvalidArgumentException */;
+    bool hasArgument(string name);
 
-    public bool hasOption(string name);
+    string[] getOptions();
 
-    public bool isInteractive();
+    string getOption(string name);
 
-    public void setInteractive(bool interactive);
+    void setOption(string name, string value) /* throws InvalidArgumentException */;
+
+    bool hasOption(string name);
+
+    bool isInteractive();
+
+    void setInteractive(bool interactive);
 }

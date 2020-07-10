@@ -24,22 +24,30 @@ import hunt.Exceptions;
 import hunt.console.input.InputArgument;
 import hunt.console.input.InputOption;
 
+import hunt.logging.ConsoleLogger;
+
+import std.range;
+
+
+/**
+ * 
+ */
 class ArgvInput : AbstractInput
 {
     private List!(string) tokens;
     private List!(string) parsed;
 
-    public this(string[] args)
+    this(string[] args)
     {
         this(args, null);
     }
 
-    public this(string[] args, InputDefinition definition)
+    this(string[] args, InputDefinition definition)
     {
         this(new ArrayList!(string)(args), definition);
     }
 
-    public this(List!(string) args, InputDefinition definition)
+    this(List!(string) args, InputDefinition definition)
     {
         tokens = args;
 
@@ -60,7 +68,8 @@ class ArgvInput : AbstractInput
     {
         bool parseOptions = true;
         parsed = tokens;
-        foreach (string token ; parsed) {
+        while(parsed.size() > 0) {
+            string token = parsed.removeAt(0);
             if (parseOptions && token == ("")) {
                 parseArgument(token);
             } else if (parseOptions && token == ("--")) {
@@ -75,15 +84,25 @@ class ArgvInput : AbstractInput
         }
     }
 
+    /**
+     * Parses a short option.
+     */
     private void parseShortOption(string token)
     {
-        string option = token.substring(1);
+        string option = token[1 .. $];
+        version(HUNT_CONSOLE_DEBUG) {
+            tracef("option: %s", option);
+        }
 
         if (option.length > 1) {
-            string name = to!string(option[0]);
+            string name = format("%c", option[0]);
             if (definition.hasShortcut(name) && definition.getOptionForShortcut(name).acceptValue()) {
                 // an option with a value (with no space)
-                addShortOption(name, option.substring(1));
+                option = option[1..$];
+                if(option[0] == '=') {
+                    option = option[1..$]; // skip the '=';
+                }
+                addShortOption(name, option);
             } else {
                 parseShortOptionSet(option);
             }
@@ -156,6 +175,10 @@ class ArgvInput : AbstractInput
 
     private void addLongOption(string name, string value)
     {
+        version(HUNT_CONSOLE_DEBUG) {
+            warningf("%s, %s", name, value);
+        }
+
         if (!definition.hasOption(name)) {
             throw new RuntimeException(format("The '--%s' option does not exist.", name));
         }
@@ -199,7 +222,7 @@ class ArgvInput : AbstractInput
     /**
      * Returns the first argument from the raw parameters (not parsed).
      */
-    /* override */ public string getFirstArgument()
+    override string getFirstArgument()
     {
         foreach (string token ; tokens) {
             if (!token.isEmpty() && token[0] == '-') {
@@ -211,6 +234,7 @@ class ArgvInput : AbstractInput
 
         return null;
     }
+    
 
     /**
      * Returns true if the raw parameters (not parsed) contain a value.
@@ -218,11 +242,19 @@ class ArgvInput : AbstractInput
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
      */
-    /* override */ public bool hasParameterOption(string[] values...)
+    override bool hasParameterOption(string[] values, bool onlyParams = false)
     {
         foreach (string token ; tokens) {
+            if(onlyParams && token == "--") return false;
+
             foreach (string value ; values) {
-                if (token == value || token.startsWith(value ~ "=")) {
+                // Options with values:
+                //   For long options, test for '--option=' at beginning
+                //   For short options, test for '-o' at beginning
+                ptrdiff_t index = value.indexOf("--");
+                string leading = index == 0 ? value ~ "=" : value;
+
+                if (token == value || (!leading.empty() && token.indexOf(leading) == 0)) {
                     return true;
                 }
             }
@@ -231,44 +263,44 @@ class ArgvInput : AbstractInput
         return false;
     }
 
-    /* override */ public string getParameterOption(string value)
-    {
-        return getParameterOption(value, null);
-    }
-
     /**
      * Returns the value of a raw option (not parsed).
      *
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully
      */
-    /* override */ public string getParameterOption(string value, string defaultValue)
+    override string getParameterOption(string[] values, string defaultValue, bool onlyParams = false)
     {
         List!(string) tokens = new ArrayList!(string)(this.tokens);
-        int len = tokens.size();
         string token;
 
-        for (int i = 0; i < len; i++) {
+        while(tokens.size() > 0) {
             token = tokens.removeAt(0);
-            if (token == value || token.startsWith(value ~ "=")) {
-                int pos = cast(int)(token.indexOf('='));
-                if (pos > -1) {
-                    return token.substring(pos + 1);
-                }
+            if(onlyParams && token == "--") return defaultValue;
 
-                return tokens.removeAt(0);
+            foreach(string value; values) {
+                if(token == value) {
+                    return tokens.removeAt(0);
+                }
+                // Options with values:
+                //   For long options, test for '--option=' at beginning
+                //   For short options, test for '-o' at beginning
+                ptrdiff_t index = value.indexOf("--");
+                string leading = index == 0 ? value ~ "=" : value;
+
+                if (!leading.empty() && token.indexOf(leading) == 0) {
+                    return token[leading.length .. $];
+                }
             }
         }
 
         return defaultValue;
     }
 
-    override public string toString()
+    override string toString()
     {
-        // todo implement
-
         return "ArgvInput{" ~
-                "tokens=" ~ (cast(Object)tokens).toString ~
+                "tokens=" ~ tokens.toString() ~
                 '}';
     }
 }

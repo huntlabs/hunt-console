@@ -134,14 +134,14 @@ class Console
 
     protected int doRun(Input input, Output output)
     {
-        if (input.hasParameterOption("--version", "-V")) {
+        if (input.hasParameterOption(["--version", "-V"], true)) {
             output.writeln(getLongVersion());
 
             return 0;
         }
 
         string name = getCommandName(input);
-        if (input.hasParameterOption("--help", "-h")) {
+        if (input.hasParameterOption(["--help", "-h"], true)) {
             if (name is null) {
                 name = "help";
                 input = new ArrayInput("command", "help");
@@ -156,13 +156,13 @@ class Console
             output.setDecorated(false);
         }
 
-        if (true == input.hasParameterOption("--no-interaction", "-n")) {
+        if (true == input.hasParameterOption(["--no-interaction", "-n"], true)) {
             input.setInteractive(false);
         }
 
-         if (true == input.hasParameterOption("--quiet", "-q")) {
+         if (true == input.hasParameterOption(["--quiet", "-q"], true)) {
             output.setVerbosity(Verbosity.QUIET);
-        } else if (true == input.hasParameterOption("--verbose", "-v")) {
+        } else if (true == input.hasParameterOption(["--verbose", "-v"], true)) {
             output.setVerbosity(Verbosity.VERBOSE);
         }
 
@@ -204,19 +204,25 @@ class Console
             output.setDecorated(false);
         }
 
-        if (input.hasParameterOption("--no-interaction", "-n")) {
+        if (input.hasParameterOption(["--no-interaction", "-n"], true)) {
             input.setInteractive(false);
         }
         // todo implement posix isatty support
 
-        if (input.hasParameterOption("--quiet", "-q")) {
+        if (input.hasParameterOption(["--quiet", "-q"], true)) {
             output.setVerbosity(Verbosity.QUIET);
         } else {
-            if (input.hasParameterOption("-vvv") || input.hasParameterOption("--verbose=3") || input.getParameterOption("--verbose", "")==("3")) {
+            if (input.hasParameterOption("-vvv") || 
+                    input.hasParameterOption("--verbose=3", true) || 
+                    input.getParameterOption("--verbose", true) == "3") {
                 output.setVerbosity(Verbosity.DEBUG);
-            } else if (input.hasParameterOption("-vv") || input.hasParameterOption("--verbose=2") || input.getParameterOption("--verbose", "")==("2")) {
+            } else if (input.hasParameterOption("-vv", true) || 
+                    input.hasParameterOption("--verbose=2", true) || 
+                    input.getParameterOption("--verbose", true) == "2") {
                 output.setVerbosity(Verbosity.VERY_VERBOSE);
-            } else if (input.hasParameterOption("-v") || input.hasParameterOption("--verbose=1") || input.getParameterOption("--verbose", "")==("1")) {
+            } else if (input.hasParameterOption("-v", true) || 
+                    input.hasParameterOption("--verbose=1", true) || 
+                    input.getParameterOption("--verbose", true) == "1") {
                 output.setVerbosity(Verbosity.VERBOSE);
             }
         }

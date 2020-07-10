@@ -32,27 +32,27 @@ class InputOption
     private string description;
     private string defaultValue;
 
-    public this(string name)
+    this(string name)
     {
         this(name, null, VALUE_NONE, null, null);
     }
 
-    public this(string name, string shortcut)
+    this(string name, string shortcut)
     {
         this(name, shortcut, VALUE_NONE, null, null);
     }
 
-    public this(string name, string shortcut, int mode)
+    this(string name, string shortcut, int mode)
     {
         this(name, shortcut, mode, null, null);
     }
 
-    public this(string name, string shortcut, int mode, string description)
+    this(string name, string shortcut, int mode, string description)
     {
         this(name, shortcut, mode, description, null);
     }
 
-    public this(string name, string shortcut, int mode, string description, string defaultValue)
+    this(string name, string shortcut, int mode, string description, string defaultValue)
     {
         if (name.startsWith("--")) {
             name = name.substring(2);
@@ -85,37 +85,37 @@ class InputOption
         setDefaultValue(defaultValue);
     }
 
-    public string getShortcut()
+    string getShortcut()
     {
         return shortcut;
     }
 
-    public string getName()
+    string getName()
     {
         return name;
     }
 
-    public bool acceptValue()
+    bool acceptValue()
     {
         return isValueRequired() || isValueOptional();
     }
 
-    public bool isValueRequired()
+    bool isValueRequired()
     {
         return (mode & VALUE_REQUIRED) == VALUE_REQUIRED;
     }
 
-    public bool isValueOptional()
+    bool isValueOptional()
     {
         return (mode & VALUE_OPTIONAL) == VALUE_OPTIONAL;
     }
 
-    public bool isArray()
+    bool isArray()
     {
         return (mode & VALUE_IS_ARRAY) == VALUE_IS_ARRAY;
     }
 
-    public void setDefaultValue(string defaultValue)
+    void setDefaultValue(string defaultValue)
     {
         if ((mode & VALUE_NONE) == VALUE_NONE && defaultValue !is null) {
             throw new LogicException("Cannot set a default value when using InputOption.VALUE_NONE mode.");
@@ -128,17 +128,17 @@ class InputOption
         this.defaultValue = acceptValue() ? defaultValue : null;
     }
 
-    public string getDefaultValue()
+    string getDefaultValue()
     {
         return defaultValue;
     }
 
-    public string getDescription()
+    string getDescription()
     {
         return description;
     }
 
-    override public bool opEquals(Object o)
+    override bool opEquals(Object o)
     {
         if (this is o) return true;
         if (!(cast(InputOption)o !is null)) return false;
@@ -155,7 +155,7 @@ class InputOption
         return true;
     }
 
-    override public size_t toHash() @trusted nothrow
+    override size_t toHash() @trusted nothrow
     {
         int result = name !is null ? cast(int)(name.hashOf()) : 0;
         result = 31 * result + (shortcut !is null ? cast(int)(shortcut.hashOf()) : 0);
