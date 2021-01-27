@@ -1,11 +1,11 @@
 {
     "name": "hunt-console",
     "description": "The Console component allows you to create command-line commands.",
-    "copyright": "Copyright (C) 2015-2020, HuntLabs",
+    "copyright": "Copyright (C) 2015-2021, HuntLabs",
     "homepage": "https://www.huntlabs.net",
     "license": "Apache-2.0",
     "dependencies": {
-		"hunt-extra": "~>1.0.0"
+		"hunt-extra": "~>1.1.0"
     },
     "configurations":[
         {
